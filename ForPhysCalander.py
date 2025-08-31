@@ -28,20 +28,6 @@ event_card_text_color_hex = "#000000"   # black text for event cards
 event_card_bg_color_hex = "#E0E0E0"     # light gray background for event cards
 filter_accent_color_hex = "#9CCB3B"
 
-st.set_page_config(
-    layout="wide",
-    page_title="Calendar",
-    initial_sidebar_state="expanded",
-    # Streamlit theme
-    theme={
-        "primaryColor": "#9CCB3B",  # checkbox/radio/button accent color
-        "backgroundColor": "#303434",
-        "secondaryBackgroundColor": "#E0E0E0",
-        "textColor": "#000000",
-        "font": "sans serif"
-    }
-)
-
 st.markdown(
     f"""
     <div style='background-color:{banner_bg_color_hex}; padding:20px; border-radius:10px; text-align:center; margin-bottom:20px;'>
