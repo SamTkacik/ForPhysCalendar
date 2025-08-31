@@ -58,20 +58,6 @@ if "events" not in st.session_state:
 # -----------------------
 col1, col2 = st.columns([1, 3])
 
-st.markdown(
-    """
-    <style>
-    /* Target the first column */
-    div[data-testid="column"] > div:first-child {
-        background-color: #f0f8ff;  /* Light blue example */
-        padding: 10px;
-        border-radius: 10px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 with col1:
     st.subheader("Filters")
 
