@@ -102,6 +102,9 @@ div.st-key-leftbox {
     color: #9CCB3B;                 /* text color for contrast */
     padding: 0.5rem;              /* optional */
 }
+div.st-key-leftbox * {{
+    color: {container_text_color_hex} !important;
+}}
 </style>
 """)
 
@@ -182,6 +185,9 @@ div.st-key-rightbox {
     color: #9CCB3B;                 /* text color for contrast */
     padding: 0.5rem;              /* optional */
 }
+div.st-key-leftbox * {{
+    color: {container_text_color_hex} !important;
+}}
 </style>
 """)
 
