@@ -26,6 +26,7 @@ banner_text_color_hex = "#9CCB3B"       # white text
 banner_bg_color_hex = "#303434"         # navy background
 event_card_text_color_hex = "#000000"   # black text for event cards
 event_card_bg_color_hex = "#E0E0E0"     # light gray background for event cards
+filter_accent_color_hex = "#9CCB3B"
 
 st.markdown(
     f"""
@@ -36,30 +37,17 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-checkbox_fill_color = "#9CCB3B"
-st.markdown(f"""
-<style>
-/* All checkboxes on the page */
-.stCheckbox input[type="checkbox"] {{
-    accent-color: {checkbox_fill_color};
-}}
-</style>
-""", unsafe_allow_html=True)
-
-custom_accent_color = "#9CCB3B"  
-st.markdown(f"""
-<style>
-/* Checkboxes */
-.stCheckbox input[type="checkbox"] {{
-    accent-color: {custom_accent_color};
-}}
-
-/* Radio buttons */
-.stRadio div[data-baseweb="radio"] > label > span:first-child > input {{
-    accent-color: {custom_accent_color};
-}}
-</style>
-""", unsafe_allow_html=True)
+st.markdown(
+    f"""
+    <style>
+    /* Streamlit form elements primary color */
+    :root {{
+        --primary-color: {filter_accent_color_hex};
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # -----------------------
 # EVENTS (Hard-coded for now)
