@@ -30,6 +30,19 @@ filter_accent_color_hex = "#9CCB3B"
 container_bg_color_hex = "#466069"
 container_text_color_hex = "#9CCB3B"
 
+st.markdown("""
+<style>
+/* Apply a gradient to the whole app background */
+.stApp {
+  background: linear-gradient(135deg, #CAD2D8, #7E96A0, #303434);
+}
+/* Optional: make the header transparent so the gradient shows through */
+.stApp > header {
+  background-color: transparent;
+}
+</style>
+""", unsafe_allow_html=True)
+
 st.markdown(
     f"""
     <div style='background-color:{banner_bg_color_hex}; padding:20px; border-radius:10px; text-align:center; margin-bottom:20px;'>
