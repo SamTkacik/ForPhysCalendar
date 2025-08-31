@@ -23,15 +23,17 @@ all_dates = pd.date_range(start_date, end_date).to_list()
 #event_card_text_color_hex = st.color_picker("Event Card Text Color", "#000000")  # default black
 #event_card_bg_color_hex = st.color_picker("Event Card Background Color", "#E0E0E0")  # default light gray
 banner_text_color_hex = "#9CCB3B"       # white text
-banner_bg_color_hex = "#466069"         # header background color
+banner_bg_color_hex = "#466069"         # 
 event_card_text_color_hex = "#000000"   # black text for event cards
 event_card_bg_color_hex = "#E0E0E0"     # light gray background for event cards
 filter_accent_color_hex = "#9CCB3B"
+container_bg_color_hex = "#466069"
+container_text_color_hex = "#9CCB3B"
 
 st.markdown(
     f"""
     <div style='background-color:{banner_bg_color_hex}; padding:20px; border-radius:10px; text-align:center; margin-bottom:20px;'>
-        <h1 style='color:{banner_text_color_hex}; margin:0;'>USF Physics Fall 25 Calendar</h1>
+        <h1 style='color:{banner_text_color_hex}; margin:0;'>USF Physics Calendar - Fall 2025</h1>
     </div>
     """,
     unsafe_allow_html=True
@@ -71,7 +73,7 @@ if "events" not in st.session_state:
 col1, col2 = st.columns([1, 3])
 
 with col1:
-    with st.container(key="leftbox", height=600, border=True):
+    with st.container(key="leftbox", border=True):
         st.subheader("Filters")
 
         # Org filters
@@ -96,8 +98,8 @@ st.html("""
 <style>
 /* Target the container by its key-generated class */
 div.st-key-leftbox {
-    background-color: #CAD2D8;   /* your color */
-    color: black;                 /* text color for contrast */
+    background-color: #466069;   /* your color */
+    color: #9CCB3B;                 /* text color for contrast */
     padding: 0.5rem;              /* optional */
 }
 </style>
@@ -107,7 +109,7 @@ div.st-key-leftbox {
 # LIST VIEW
 # -------------------
 with col2:
-    with st.container(key="rightbox", height=600, border=True):
+    with st.container(key="rightbox", border=True):
         if view_mode == "List View":
             st.subheader("🗓 Events")
             for d in all_dates:
@@ -176,8 +178,8 @@ st.html("""
 <style>
 /* Target the container by its key-generated class */
 div.st-key-rightbox {
-    background-color: #CAD2D8;   /* your color */
-    color: black;                 /* text color for contrast */
+    background-color: #466069;   /* your color */
+    color: #9CCB3B;                 /* text color for contrast */
     padding: 0.5rem;              /* optional */
 }
 </style>
