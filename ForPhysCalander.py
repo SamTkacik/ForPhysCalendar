@@ -20,6 +20,7 @@ st.title("📅 USF Physics Calendar – Fall 2025")
 # -----------------------
 # Add Event (Owner, ST or PGSC members, Only)
 # -----------------------
+"""
 with st.form("add_event"):
     st.subheader("➕ Add Event (Owner Only)")
     event_date = st.date_input("Date", min_value=start_date, max_value=end_date, value=start_date)
@@ -36,31 +37,27 @@ with st.form("add_event"):
             "type": event_type
         })
         st.success(f"✅ Added '{event_name}' on {event_date} under '{event_category}' ({event_type})")
+"""
+# -----------------------
+# Filters and view
+# -----------------------
 
-# -----------------------
-# Filters
-# -----------------------
+st.subheader("View Options")
+view_mode = st.radio("Choose view:", ["List View", "Grid View"], horizontal=False)
+
 st.sidebar.header("Calendar Filters")
 
 # Category filters
 st.sidebar.markdown("Filter by organization:")
 select_all_categories = st.sidebar.checkbox("Select/Deselect All", value=True, key="all_cats")
 selected_categories = CATEGORY_OPTIONS if select_all_categories else [
-    cat for cat in CATEGORY_OPTIONS if st.sidebar.checkbox(cat, value=True, key=f"cat_{cat}")
-]
+    cat for cat in CATEGORY_OPTIONS if st.sidebar.checkbox(cat, value=True, key=f"cat_{cat}")]
 
 # Type filters
 st.sidebar.markdown("Filter by event type:")
 select_all_types = st.sidebar.checkbox("Select/Deselect All", value=True, key="all_types")
 selected_types = TYPE_OPTIONS if select_all_types else [
-    t for t in TYPE_OPTIONS if st.sidebar.checkbox(t, value=True, key=f"type_{t}")
-]
-
-# -----------------------
-# View Selector
-# -----------------------
-st.subheader("View Options")
-view_mode = st.radio("Choose view:", ["List View", "Grid View"], horizontal=True)
+    t for t in TYPE_OPTIONS if st.sidebar.checkbox(t, value=True, key=f"type_{t}")]
 
 # -----------------------
 # List View
