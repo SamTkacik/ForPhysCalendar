@@ -71,7 +71,7 @@ if "events" not in st.session_state:
 col1, col2 = st.columns([1, 3])
 
 with col1:
-    with st.container(key="leftbox", border=True):
+    with st.container(key="leftbox", height=600, border=True):
         st.subheader("Filters")
 
         # Org filters
@@ -107,7 +107,7 @@ div.st-key-leftbox {
 # LIST VIEW
 # -------------------
 with col2:
-    with st.container(key="rightbox", border=True):
+    with st.container(key="rightbox", height=600, border=True):
         if view_mode == "List View":
             st.subheader("🗓 Events")
             for d in all_dates:
