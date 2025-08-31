@@ -107,68 +107,80 @@ div.st-key-leftbox {
 # LIST VIEW
 # -------------------
 with col2:
-    if view_mode == "List View":
-        st.subheader("🗓 Events")
-        for d in all_dates:
-            day = d.date()
-            events_today = [
-                e for e in st.session_state["events"]
-                if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types
-            ]
-            if events_today:
-                st.markdown(f"### {d.strftime('%A, %B %d, %Y')}")
-                for e in events_today:
-                    with st.expander(f"**{e['name']}** ({e['category']}, {e['type']})"):
-                        st.write(f"**Time:** {e['time']}")
-                        st.write(f"**Location:** {e['location']}")
-                        st.write(f"**Description:** {e['description']}")
+    with st.container(key="rightbox", border=True):
+        if view_mode == "List View":
+            st.subheader("🗓 Events")
+            for d in all_dates:
+                day = d.date()
+                events_today = [
+                    e for e in st.session_state["events"]
+                    if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types
+                ]
+                if events_today:
+                    st.markdown(f"### {d.strftime('%A, %B %d, %Y')}")
+                    for e in events_today:
+                        with st.expander(f"**{e['name']}** ({e['category']}, {e['type']})"):
+                            st.write(f"**Time:** {e['time']}")
+                            st.write(f"**Location:** {e['location']}")
+                            st.write(f"**Description:** {e['description']}")
 
-# -------------------
-# GRID VIEW
-# -------------------
-    else:
-        st.subheader("📆 Events")
+    # -------------------
+    # GRID VIEW
+    # -------------------
+        else:
+            st.subheader("📆 Events")
 
-        months = sorted(set((d.year, d.month) for d in all_dates))
-        chosen_month = st.selectbox(
-            "Select Month",
-            [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months]
-        )
-        chosen_year, chosen_month_num = [
-            (y, m) for (y, m) in months
-            if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month
-        ][0]
+            months = sorted(set((d.year, d.month) for d in all_dates))
+            chosen_month = st.selectbox(
+                "Select Month",
+                [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months]
+            )
+            chosen_year, chosen_month_num = [
+                (y, m) for (y, m) in months
+                if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month
+            ][0]
 
-        cal = calendar.Calendar(firstweekday=6)  # Sunday start
-        month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
+            cal = calendar.Calendar(firstweekday=6)  # Sunday start
+            month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
 
-        # Render grid
-        weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-        st.write(" | ".join([f"**{d}**" for d in weekdays]))
-        st.write("---" * 15)
+            # Render grid
+            weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+            st.write(" | ".join([f"**{d}**" for d in weekdays]))
+            st.write("---" * 15)
 
-        for week in month_days:
-            cols = st.columns(7, gap="medium")
-            for i, day in enumerate(week):
-                with cols[i]:
-                    if start_date <= day <= end_date:
-                        st.markdown(f"### {day.day}")
-                        todays_events = [
-                            e for e in st.session_state["events"]
-                            if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types
-                        ]
-                        for e in todays_events:
-                            st.markdown(
-                                f"""
-                                <div style='background-color:#e6f2ff; padding:6px; 
-                                border-radius:6px; margin-bottom:6px;'>
-                                    <b>{e['name']}</b><br>
-                                    <small>{e['time']} @ {e['location']}</small>
-                                </div>
-                                """,
-                                unsafe_allow_html=True
-                            )
-                    else:
-                        st.write(" ")
+            for week in month_days:
+                cols = st.columns(7, gap="medium")
+                for i, day in enumerate(week):
+                    with cols[i]:
+                        if start_date <= day <= end_date:
+                            st.markdown(f"### {day.day}")
+                            todays_events = [
+                                e for e in st.session_state["events"]
+                                if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types
+                            ]
+                            for e in todays_events:
+                                st.markdown(
+                                    f"""
+                                    <div style='background-color:#e6f2ff; padding:6px; 
+                                    border-radius:6px; margin-bottom:6px;'>
+                                        <b>{e['name']}</b><br>
+                                        <small>{e['time']} @ {e['location']}</small>
+                                    </div>
+                                    """,
+                                    unsafe_allow_html=True
+                                )
+                        else:
+                            st.write(" ")
+
+st.html("""
+<style>
+/* Target the container by its key-generated class */
+div.st-key-rightbox {
+    background-color: #CAD2D8;   /* your color */
+    color: black;                 /* text color for contrast */
+    padding: 0.5rem;              /* optional */
+}
+</style>
+""")
 
 
