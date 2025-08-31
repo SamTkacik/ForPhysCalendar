@@ -36,6 +36,16 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+checkbox_fill_color = "#9CCB3B"
+st.markdown(f"""
+<style>
+/* All checkboxes on the page */
+.stCheckbox input[type="checkbox"] {{
+    accent-color: {checkbox_fill_color};
+}}
+</style>
+""", unsafe_allow_html=True)
+
 # -----------------------
 # EVENTS (Hard-coded for now)
 # -----------------------
@@ -56,15 +66,6 @@ if "events" not in st.session_state:
 # FILTERS + VIEW OPTIONS
 # -----------------------
 col1, col2 = st.columns([1, 3])
-checkbox_fill_color = "#9CCB3B"  
-st.markdown(f"""
-<style>
-/* Change checkbox square and checkmark color */
-input[type="checkbox"] {{
-    accent-color: {checkbox_fill_color};
-}}
-</style>
-""", unsafe_allow_html=True)
 
 with col1:
     st.subheader("Filters")
@@ -154,7 +155,6 @@ with col2:
                             )
                     else:
                         st.write(" ")
-
 
 
 
