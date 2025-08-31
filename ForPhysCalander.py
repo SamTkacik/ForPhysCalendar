@@ -118,6 +118,37 @@ div.st-key-leftbox {
 </style>
 """)
 
+# Add this CSS block after your existing st.markdown styling blocks
+
+st.markdown(
+    f"""
+    <style>
+    /* Style checkbox labels */
+    .stCheckbox > label > div[data-testid="stMarkdownContainer"] > p {{
+        color: {container_text_color_hex} !important;
+        font-weight: 500;
+    }}
+    
+    /* Alternative selector that might work better depending on Streamlit version */
+    .stCheckbox label {{
+        color: {container_text_color_hex} !important;
+    }}
+    
+    /* Style the checkbox container text */
+    .stCheckbox > label {{
+        color: {container_text_color_hex} !important;
+    }}
+    
+    /* Style radio button labels as well if needed */
+    .stRadio > label > div[data-testid="stMarkdownContainer"] > p {{
+        color: {container_text_color_hex} !important;
+        font-weight: 500;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # -------------------
 # LIST VIEW
 # -------------------
