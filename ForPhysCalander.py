@@ -6,129 +6,120 @@ import calendar
 # -----------------------
 # 🔧 MASTER SETTINGS
 # -----------------------
-CATEGORY_OPTIONS = ["PGSC", "SPS", "Department of Physics", "GAU", "CAS", "Other"]
+st.set_page_config(layout="wide")
+col1, col2 = st.columns([1, 3])
+
+CATEGORY_OPTIONS = ["PGSC", "SPS", "Department of Physics", "GAU", "Other"]
 TYPE_OPTIONS = ['Recreational', 'Academic/Professional', 'Interdisciplinary']
 
-# Calendar range
 start_date = datetime.date(2025, 8, 1)
 end_date = datetime.date(2025, 12, 31)
+all_dates = pd.date_range(start_date, end_date).to_list()
 
 # -----------------------
-# EVENT DEFINITIONS
+# EVENTS (Hard-coded for now)
 # -----------------------
 if "events" not in st.session_state:
     st.session_state["events"] = [
         {
             "date": datetime.date(2025, 9, 1),
             "name": "Labor Day Test Event",
-            "category": "Other",
-            "type": "Recreational",
-            "time": "10:00 AM - 2:00 PM",
-            "location": "USF Campus Lawn",
-            "description": "A placeholder event for Labor Day."
-        },
-        {
-            "date": datetime.date(2025, 9, 10),
-            "name": "SPS Guest Lecture",
-            "category": "SPS",
-            "type": "Academic/Professional",
-            "time": "4:00 PM - 6:00 PM",
-            "location": "Physics Building, Room 101",
-            "description": "Special lecture hosted by the Society of Physics Students."
-        },
-        {
-            "date": datetime.date(2025, 10, 5),
-            "name": "Physics Dept. Research Symposium",
             "category": "Department of Physics",
-            "type": "Academic/Professional",
-            "time": "9:00 AM - 5:00 PM",
-            "location": "Science Hall Auditorium",
-            "description": "Annual symposium highlighting student and faculty research."
+            "type": "Recreational",
+            "time": "12:00 PM",
+            "location": "USF Physics Building",
+            "description": "A test event for Labor Day."
         }
     ]
 
 # -----------------------
-# PAGE SETUP
+# 🎨 Banner Title
 # -----------------------
-st.markdown("""
-    <div style="background-color:#004d99; padding:20px; border-radius:12px; text-align:center;">
-        <h1 style="color:white;">USF Physics Calendar – Fall 2025</h1>
+st.markdown(
+    """
+    <div style='background-color:#004080; padding:20px; border-radius:10px; text-align:center;'>
+        <h1 style='color:white;'>USF Physics Calendar - Fall 2025</h1>
     </div>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
 
 # -----------------------
-# SIDEBAR: Filters & Views
+# FILTERS + VIEW OPTIONS
 # -----------------------
-st.sidebar.header("Filters & Views")
+with col1:
+    st.subheader("Filters")
 
-# Filters
-st.sidebar.subheader("Filter by Organization")
-select_all_org = st.sidebar.checkbox("Select/Deselect All Orgs", value=True)
-if select_all_org:
-    selected_categories = CATEGORY_OPTIONS
-else:
-    selected_categories = [c for c in CATEGORY_OPTIONS if st.sidebar.checkbox(c, value=True)]
+    # Org filters
+    st.markdown("**Filter by Organization:**")
+    select_all_categories = st.checkbox("Select/Deselect All Organizations", value=True)
+    selected_categories = CATEGORY_OPTIONS if select_all_categories else [
+        cat for cat in CATEGORY_OPTIONS if st.checkbox(cat, value=True, key=f"cat_{cat}")
+    ]
 
-st.sidebar.subheader("Filter by Type")
-select_all_type = st.sidebar.checkbox("Select/Deselect All Types", value=True)
-if select_all_type:
-    selected_types = TYPE_OPTIONS
-else:
-    selected_types = [t for t in TYPE_OPTIONS if st.sidebar.checkbox(t, value=True)]
+    # Type filters
+    st.markdown("**Filter by Event Type:**")
+    select_all_types = st.checkbox("Select/Deselect All Event Types", value=True)
+    selected_types = TYPE_OPTIONS if select_all_types else [
+        t for t in TYPE_OPTIONS if st.checkbox(t, value=True, key=f"type_{t}")
+    ]
 
-# View option
-view_option = st.sidebar.radio("View as:", ["List View", "Grid View"])
+    # View selector
+    st.subheader("👀 View Options")
+    view_mode = st.radio("Choose view:", ["List View", "Grid View"], horizontal=True)
 
-# Month selection for grid
-month = None
-if view_option == "Grid View":
-    month = st.sidebar.selectbox(
-        "Select Month",
-        ["August", "September", "October", "November", "December"]
-    )
-    month_to_num = {"August": 8, "September": 9, "October": 10, "November": 11, "December": 12}
-    month = month_to_num[month]
+# -------------------
+# LIST VIEW
+# -------------------
+with col2:
+    if view_mode == "List View":
+        st.subheader("🗓 Events (List View)")
+        for d in all_dates:
+            day = d.date()
+            events_today = [
+                e for e in st.session_state["events"]
+                if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types
+            ]
+            if events_today:
+                st.markdown(f"### {d.strftime('%A, %B %d, %Y')}")
+                for e in events_today:
+                    with st.expander(f"**{e['name']}** ({e['category']}, {e['type']})"):
+                        st.write(f"**Time:** {e['time']}")
+                        st.write(f"**Location:** {e['location']}")
+                        st.write(f"**Description:** {e['description']}")
 
-# -----------------------
-# FILTER EVENTS
-# -----------------------
-events_df = pd.DataFrame(st.session_state["events"])
-filtered_events = events_df[
-    events_df["category"].isin(selected_categories) &
-    events_df["type"].isin(selected_types)
-]
-
-# -----------------------
-# DISPLAY
-# -----------------------
-if view_option == "List View":
-    st.subheader("📅 Events (List View)")
-    if filtered_events.empty:
-        st.info("No events match your filters.")
+# -------------------
+# GRID VIEW
+# -------------------
     else:
-        for _, event in filtered_events.sort_values("date").iterrows():
-            with st.expander(f"{event['date']} – {event['name']}"):
-                st.write(f"**Organization:** {event['category']}")
-                st.write(f"**Type:** {event['type']}")
-                st.write(f"**Time:** {event['time']}")
-                st.write(f"**Location:** {event['location']}")
-                st.write(f"**Description:** {event['description']}")
+        st.subheader("📆 Events (Grid View)")
 
-elif view_option == "Grid View":
-    st.subheader("📆 Events (Grid View)")
+        months = sorted(set((d.year, d.month) for d in all_dates))
+        chosen_month = st.selectbox(
+            "Select Month",
+            [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months]
+        )
+        chosen_year, chosen_month_num = [
+            (y, m) for (y, m) in months
+            if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month
+        ][0]
 
-    if month is not None:
-        cal = calendar.Calendar(firstweekday=6)  # Sunday-first
-        month_days = cal.monthdatescalendar(2025, month)
+        cal = calendar.Calendar(firstweekday=6)  # Sunday start
+        month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
 
+        # Render as a table-like grid
         for week in month_days:
             cols = st.columns(7)
             for i, day in enumerate(week):
                 with cols[i]:
-                    if day.month == month:
+                    if start_date <= day <= end_date:
                         st.markdown(f"**{day.day}**")
-                        day_events = filtered_events[filtered_events["date"] == day]
-                        for _, event in day_events.iterrows():
-                            st.markdown(f"- {event['name']} ({event['time']})")
-
+                        todays_events = [
+                            e for e in st.session_state["events"]
+                            if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types
+                        ]
+                        for e in todays_events:
+                            st.markdown(f"- {e['name']} ({e['category']})")
+                    else:
+                        st.markdown(" ")
 
