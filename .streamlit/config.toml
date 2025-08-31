@@ -2,7 +2,4 @@
 primaryColor = "#9CCB3B"
 backgroundColor = "black"
 
-[theme.sidebar]
-backgroundColor = "#CAD2D8"
-secondaryBackgroundColor = "#7E96A0"
-textColor = "black"
+
