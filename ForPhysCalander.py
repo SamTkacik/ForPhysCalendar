@@ -31,8 +31,20 @@ filter_accent_color_hex = "#9CCB3B"
 st.markdown(
     f"""
     <div style='background-color:{banner_bg_color_hex}; padding:20px; border-radius:10px; text-align:center; margin-bottom:20px;'>
-        <h1 style='color:{banner_text_color_hex}; margin:0;'>USF Physics Fall 25 Calendar</h1>
+        <h1 style='color:{banner_text_color_hex}; margin:0;'>USF Physics Calendar - Fall 2025</h1>
     </div>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    f"""
+    <style>
+    /* Streamlit form elements primary color */
+    :root {{
+        --primary-color: {filter_accent_color_hex};
+    }}
+    </style>
     """,
     unsafe_allow_html=True
 )
@@ -59,25 +71,37 @@ if "events" not in st.session_state:
 col1, col2 = st.columns([1, 3])
 
 with col1:
-    st.subheader("Filters")
+    with st.container(key="leftbox", border=True):
+        st.subheader("Filters")
 
-    # Org filters
-    st.markdown("**Filter by Organization:**")
-    select_all_categories = st.checkbox("Select/Deselect All Organizations", value=True)
-    selected_categories = CATEGORY_OPTIONS if select_all_categories else [
-        cat for cat in CATEGORY_OPTIONS if st.checkbox(cat, value=True, key=f"cat_{cat}")
-    ]
+        # Org filters
+        st.markdown("**Filter by Organization:**")
+        select_all_categories = st.checkbox("Select/Deselect All Organizations", value=True)
+        selected_categories = CATEGORY_OPTIONS if select_all_categories else [
+            cat for cat in CATEGORY_OPTIONS if st.checkbox(cat, value=True, key=f"cat_{cat}")
+        ]
 
-    # Type filters
-    st.markdown("**Filter by Event Type:**")
-    select_all_types = st.checkbox("Select/Deselect All Event Types", value=True)
-    selected_types = TYPE_OPTIONS if select_all_types else [
-        t for t in TYPE_OPTIONS if st.checkbox(t, value=True, key=f"type_{t}")
-    ]
+        # Type filters
+        st.markdown("**Filter by Event Type:**")
+        select_all_types = st.checkbox("Select/Deselect All Event Types", value=True)
+        selected_types = TYPE_OPTIONS if select_all_types else [
+            t for t in TYPE_OPTIONS if st.checkbox(t, value=True, key=f"type_{t}")
+        ]
 
-    # View selector
-    st.subheader("View Options")
-    view_mode = st.radio("Choose view:", ["List View", "Grid View"], horizontal=True)
+        # View selector
+        st.subheader("View Options")
+        view_mode = st.radio("Choose view:", ["List View", "Grid View"], horizontal=True)
+
+st.html("""
+<style>
+/* Target the container by its key-generated class */
+div.st-key-leftbox {
+    background-color: #CAD2D8;   /* your color */
+    color: black;                 /* text color for contrast */
+    padding: 0.5rem;              /* optional */
+}
+</style>
+""")
 
 # -------------------
 # LIST VIEW
@@ -146,6 +170,5 @@ with col2:
                             )
                     else:
                         st.write(" ")
-
 
 
