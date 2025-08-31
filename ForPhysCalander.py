@@ -23,7 +23,7 @@ all_dates = pd.date_range(start_date, end_date).to_list()
 #event_card_text_color_hex = st.color_picker("Event Card Text Color", "#000000")  # default black
 #event_card_bg_color_hex = st.color_picker("Event Card Background Color", "#E0E0E0")  # default light gray
 banner_text_color_hex = "#9CCB3B"       # white text
-banner_bg_color_hex = '#7E96A0' #"#466069"         # 
+banner_bg_color_hex = '#303434' #"#466069"         # 
 event_card_text_color_hex = "#000000"   # black text for event cards
 event_card_bg_color_hex = "#E0E0E0"     # light gray background for event cards
 filter_accent_color_hex = "#9CCB3B"
@@ -98,7 +98,7 @@ st.html("""
 <style>
 /* Target the container by its key-generated class */
 div.st-key-leftbox {
-    background-color: #7E96A0;   /* your color */
+    background-color: #303434;   /* your color */
     color: #9CCB3B;                 /* text color for contrast */
     padding: 0.5rem;              /* optional */
 }
@@ -178,7 +178,7 @@ st.html("""
 <style>
 /* Target the container by its key-generated class */
 div.st-key-rightbox {
-    background-color: #7E96A0;   /* your color */
+    background-color: #303434;   /* your color */
     color: #9CCB3B;                 /* text color for contrast */
     padding: 0.5rem;              /* optional */
 }
