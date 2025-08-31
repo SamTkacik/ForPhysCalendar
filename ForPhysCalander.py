@@ -31,7 +31,7 @@ filter_accent_color_hex = "#9CCB3B"
 st.markdown(
     f"""
     <div style='background-color:{banner_bg_color_hex}; padding:20px; border-radius:10px; text-align:center; margin-bottom:20px;'>
-        <h1 style='color:{banner_text_color_hex}; margin:0;'>USF Physics Calendar - Fall 2025</h1>
+        <h1 style='color:{banner_text_color_hex}; margin:0;'>USF Physics Fall 25 Calendar</h1>
     </div>
     """,
     unsafe_allow_html=True
