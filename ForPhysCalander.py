@@ -18,10 +18,14 @@ all_dates = pd.date_range(start_date, end_date).to_list()
 # -----------------------
 # Banner Title (ALWAYS FIRST)
 # -----------------------
-banner_text_color_hex = st.color_picker("Banner Text Color", "#9CCB3B")  # default white
-banner_bg_color_hex = st.color_picker("Banner Background Color", "#303434")  # default navy
-event_card_text_color_hex = st.color_picker("Event Card Text Color", "#000000")  # default black
-event_card_bg_color_hex = st.color_picker("Event Card Background Color", "#E0E0E0")  # default light gray
+#banner_text_color_hex = st.color_picker("Banner Text Color", "#9CCB3B")  # default white
+#banner_bg_color_hex = st.color_picker("Banner Background Color", "#303434")  # default navy
+#event_card_text_color_hex = st.color_picker("Event Card Text Color", "#000000")  # default black
+#event_card_bg_color_hex = st.color_picker("Event Card Background Color", "#E0E0E0")  # default light gray
+banner_text_color_hex = "#9CCB3B"       # white text
+banner_bg_color_hex = "#303434"         # navy background
+event_card_text_color_hex = "#000000"   # black text for event cards
+event_card_bg_color_hex = "#E0E0E0"     # light gray background for event cards
 
 st.markdown(
     f"""
