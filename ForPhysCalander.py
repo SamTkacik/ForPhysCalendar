@@ -7,7 +7,6 @@ import calendar
 # 🔧 MASTER SETTINGS
 # -----------------------
 st.set_page_config(layout="wide")
-col1, col2 = st.columns([1, 3])
 
 CATEGORY_OPTIONS = ["PGSC", "SPS", "Department of Physics", "GAU", "Other"]
 TYPE_OPTIONS = ['Recreational', 'Academic/Professional', 'Interdisciplinary']
@@ -15,6 +14,18 @@ TYPE_OPTIONS = ['Recreational', 'Academic/Professional', 'Interdisciplinary']
 start_date = datetime.date(2025, 8, 1)
 end_date = datetime.date(2025, 12, 31)
 all_dates = pd.date_range(start_date, end_date).to_list()
+
+# -----------------------
+# 🎨 Banner Title (ALWAYS FIRST)
+# -----------------------
+st.markdown(
+    """
+    <div style='background-color:#004080; padding:20px; border-radius:10px; text-align:center; margin-bottom:20px;'>
+        <h1 style='color:white; margin:0;'>USF Physics Calendar - Fall 2025</h1>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # -----------------------
 # EVENTS (Hard-coded for now)
@@ -33,20 +44,10 @@ if "events" not in st.session_state:
     ]
 
 # -----------------------
-# 🎨 Banner Title
-# -----------------------
-st.markdown(
-    """
-    <div style='background-color:#004080; padding:20px; border-radius:10px; text-align:center;'>
-        <h1 style='color:white;'>USF Physics Calendar - Fall 2025</h1>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-# -----------------------
 # FILTERS + VIEW OPTIONS
 # -----------------------
+col1, col2 = st.columns([1, 3])
+
 with col1:
     st.subheader("Filters")
 
@@ -107,19 +108,33 @@ with col2:
         cal = calendar.Calendar(firstweekday=6)  # Sunday start
         month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
 
-        # Render as a table-like grid
+        # Render grid
+        weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+        st.write(" | ".join([f"**{d}**" for d in weekdays]))
+        st.write("---" * 15)
+
         for week in month_days:
-            cols = st.columns(7)
+            cols = st.columns(7, gap="medium")
             for i, day in enumerate(week):
                 with cols[i]:
                     if start_date <= day <= end_date:
-                        st.markdown(f"**{day.day}**")
+                        st.markdown(f"### {day.day}")
                         todays_events = [
                             e for e in st.session_state["events"]
                             if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types
                         ]
                         for e in todays_events:
-                            st.markdown(f"- {e['name']} ({e['category']})")
+                            st.markdown(
+                                f"""
+                                <div style='background-color:#e6f2ff; padding:6px; 
+                                border-radius:6px; margin-bottom:6px;'>
+                                    <b>{e['name']}</b><br>
+                                    <small>{e['time']} @ {e['location']}</small>
+                                </div>
+                                """,
+                                unsafe_allow_html=True
+                            )
                     else:
-                        st.markdown(" ")
+                        st.write(" ")
+
 
