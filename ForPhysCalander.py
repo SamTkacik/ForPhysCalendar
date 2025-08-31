@@ -46,6 +46,21 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
+custom_accent_color = "#9CCB3B"  
+st.markdown(f"""
+<style>
+/* Checkboxes */
+.stCheckbox input[type="checkbox"] {{
+    accent-color: {custom_accent_color};
+}}
+
+/* Radio buttons */
+.stRadio div[data-baseweb="radio"] > label > span:first-child > input {{
+    accent-color: {custom_accent_color};
+}}
+</style>
+""", unsafe_allow_html=True)
+
 # -----------------------
 # EVENTS (Hard-coded for now)
 # -----------------------
