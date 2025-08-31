@@ -8,20 +8,25 @@ import calendar
 # -----------------------
 st.set_page_config(layout="wide")
 
-CATEGORY_OPTIONS = ["PGSC", "SPS", "Department of Physics", "GAU", "Other"]
-TYPE_OPTIONS = ['Recreational', 'Academic/Professional', 'Interdisciplinary']
+CATEGORY_OPTIONS = ["Department of Physics", "PGSC", "SPS", "GAU", "Other"]
+TYPE_OPTIONS = ['Academic/Professional', 'Recreational', 'Interdisciplinary', 'Other']
 
 start_date = datetime.date(2025, 8, 1)
 end_date = datetime.date(2025, 12, 31)
 all_dates = pd.date_range(start_date, end_date).to_list()
 
 # -----------------------
-# 🎨 Banner Title (ALWAYS FIRST)
+# Banner Title (ALWAYS FIRST)
 # -----------------------
+banner_text_color_hex = st.color_picker("Banner Text Color", "#9CCB3B")  # default white
+banner_bg_color_hex = st.color_picker("Banner Background Color", "#303434")  # default navy
+event_card_text_color_hex = st.color_picker("Event Card Text Color", "#000000")  # default black
+event_card_bg_color_hex = st.color_picker("Event Card Background Color", "#E0E0E0")  # default light gray
+
 st.markdown(
-    """
-    <div style='background-color:#004080; padding:20px; border-radius:10px; text-align:center; margin-bottom:20px;'>
-        <h1 style='color:white; margin:0;'>USF Physics Calendar - Fall 2025</h1>
+    f"""
+    <div style='background-color:{banner_bg_color_hex}; padding:20px; border-radius:10px; text-align:center; margin-bottom:20px;'>
+        <h1 style='color:{banner_text_color_hex}; margin:0;'>USF Physics Calendar - Fall 2025</h1>
     </div>
     """,
     unsafe_allow_html=True
@@ -66,7 +71,7 @@ with col1:
     ]
 
     # View selector
-    st.subheader("👀 View Options")
+    st.subheader("View Options")
     view_mode = st.radio("Choose view:", ["List View", "Grid View"], horizontal=True)
 
 # -------------------
@@ -74,7 +79,7 @@ with col1:
 # -------------------
 with col2:
     if view_mode == "List View":
-        st.subheader("🗓 Events (List View)")
+        st.subheader("🗓 Events")
         for d in all_dates:
             day = d.date()
             events_today = [
@@ -93,7 +98,7 @@ with col2:
 # GRID VIEW
 # -------------------
     else:
-        st.subheader("📆 Events (Grid View)")
+        st.subheader("📆 Events")
 
         months = sorted(set((d.year, d.month) for d in all_dates))
         chosen_month = st.selectbox(
@@ -136,5 +141,7 @@ with col2:
                             )
                     else:
                         st.write(" ")
+
+
 
 
