@@ -153,55 +153,39 @@ with col1:
 # -----------------------
 with col2:
     with st.container(key="rightbox", border=True, height=650):
-        if view_mode == "List View":
-            st.subheader("🗓 Events")
-            st.markdown('<div id="listview-container">', unsafe_allow_html=True)
-
-            for d in all_dates:
-                day = d.date()
-                events_today = [
-                    e for e in st.session_state["events"]
-                    if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types]
-                if events_today:
-                    st.markdown(f"### {d.strftime('%A, %B %d, %Y')}")
-                    for e in events_today:
-                        with st.expander(f"{e['name']} ({e['category']}, {e['type']})"):
-                            st.markdown(render_event_card(e), unsafe_allow_html=True)
-
 # -----------------------
 # GRID VIEW
 # -----------------------
-        else:
-            st.subheader("📆 Events")
+        st.subheader("📆 Events")
 
-            months = sorted(set((d.year, d.month) for d in all_dates))
-            chosen_month = st.selectbox(
-                "Select Month",
-                [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months])
-            chosen_year, chosen_month_num = [
-                (y, m) for (y, m) in months
-                if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month][0]
+        months = sorted(set((d.year, d.month) for d in all_dates))
+        chosen_month = st.selectbox(
+            "Select Month",
+            [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months])
+        chosen_year, chosen_month_num = [
+            (y, m) for (y, m) in months
+        if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month][0]
 
-            cal = calendar.Calendar(firstweekday=6)  # Sunday start
-            month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
+        cal = calendar.Calendar(firstweekday=6)  # Sunday start
+        month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
 
-            weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-            st.write(" | ".join([f"**{d}**" for d in weekdays]))
-            st.write("---" * 15)
+        weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+        st.write(" | ".join([f"**{d}**" for d in weekdays]))
+        st.write("---" * 15)
 
-            for week in month_days:
-                cols = st.columns(7, gap="medium")
-                for i, day in enumerate(week):
-                    with cols[i]:
-                        if start_date <= day <= end_date:
-                            st.markdown(f"### {day.day}")
-                            todays_events = [
-                                e for e in st.session_state["events"]
-                                if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types]
-                            for e in todays_events:
-                                st.markdown(render_event_card(e, compact=True), unsafe_allow_html=True)
-                        else:
-                            st.write(" ")
+        for week in month_days:
+            cols = st.columns(7, gap="medium")
+            for i, day in enumerate(week):
+                with cols[i]:
+                    if start_date <= day <= end_date:
+                        st.markdown(f"### {day.day}")
+                        todays_events = [
+                            e for e in st.session_state["events"]
+                            if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types]
+                        for e in todays_events:
+                            st.markdown(render_event_card(e, compact=True), unsafe_allow_html=True)
+                    else:
+                        st.write(" ")
 
 
 
