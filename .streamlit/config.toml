@@ -2,6 +2,7 @@
 primaryColor = "#9CCB3B"
 backgroundColor = "black"
 textColor = "white"
+linkColor = "#009374"      # link text color
 
 
 
