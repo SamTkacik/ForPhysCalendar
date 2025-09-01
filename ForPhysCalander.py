@@ -1,4 +1,3 @@
-#cal test 
 import streamlit as st
 import pandas as pd
 import datetime
@@ -7,48 +6,81 @@ import calendar
 # -----------------------
 # MASTER SETTINGS
 # -----------------------
-st.set_page_config(layout="wide") # uses full page
+st.set_page_config(layout="wide")
 
-# for classifying events in calendar
 CATEGORY_OPTIONS = ["Department of Physics", "PGSC", "SPS", "GAU", "Other"]
 TYPE_OPTIONS = ['Academic/Professional', 'Recreational', 'Interdisciplinary', 'Other']
 
-# update each semester
 start_date = datetime.date(2025, 8, 1)
 end_date = datetime.date(2025, 12, 31)
 all_dates = pd.date_range(start_date, end_date).to_list()
 
 # -----------------------
-# Banner Title (ALWAYS FIRST, st outputs in same order as code)
+# COLORS
 # -----------------------
-# st.color_picker makes colors interactive in site instead of absolute
-#banner_text_color_hex = st.color_picker("Banner Text Color", "#9CCB3B")  # default white
-#banner_bg_color_hex = st.color_picker("Banner Background Color", "#303434")  # default navy
-#event_card_text_color_hex = st.color_picker("Event Card Text Color", "#000000")  # default black
-#event_card_bg_color_hex = st.color_picker("Event Card Background Color", "#E0E0E0")  # default light gray
-banner_text_color_hex = "#9CCB3B"       # for title/main heading
-banner_bg_color_hex = 'black' #"#466069" not used when gradient is placed later on
-event_card_text_color_hex = "#000000"   # black text for event cards
-event_card_bg_color_hex = "#E0E0E0"     # light gray background for event cards
+banner_text_color_hex = "#9CCB3B"
+banner_bg_color_hex = "black"
+event_card_text_color_hex = "#FFFFFF"
 filter_accent_color_hex = "#9CCB3B"
 container_bg_color_hex = "#466069"
 container_text_color_hex = "#9CCB3B"
 
-# does large background over page, creates gradient at 135 degrees and takes many colors (currently 3)
+# -----------------------
+# GLOBAL STYLES
+# -----------------------
 st.markdown("""
 <style>
-/* Apply a gradient to the whole app background */
+/* App background gradient */
 .stApp {
   background: linear-gradient(135deg, #CAD2D8, #7E96A0, #303434);
 }
-/* Optional: make the header transparent so the gradient shows through */
-.stApp > header {
-  background-color: transparent;
+.stApp > header {background-color: transparent;}
+
+/* Gradient event card (shared) */
+.event-card {
+    background: linear-gradient(135deg, #303434, #466069);
+    color: white;
+    padding: 6px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+/* Expander header */
+div[data-testid="stExpander"] > div:first-child {
+    background: linear-gradient(135deg, #466069, #9CCB3B) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    border-radius: 10px !important;
+    padding: 8px 12px !important;
+    margin-bottom: 8px !important;
+}
+/* Expander body */
+div[data-testid="stExpander"] > div:nth-child(2) {
+    background: linear-gradient(180deg, rgba(70,96,105,0.15), rgba(156,203,59,0.15)) !important;
+    color: white !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+}
+
+/* Sidebar-like container styles */
+div.st-key-leftbox, div.st-key-rightbox {
+    background-color: black;
+    color: #9CCB3B;
+    padding: 0.5rem;
+}
+
+/* Checkbox + radio labels */
+.stCheckbox label, .stRadio label {
+    color: %s !important;
+    font-weight: 500 !important;
 }
 </style>
-""", unsafe_allow_html=True)
+""" % container_text_color_hex, unsafe_allow_html=True)
 
-#creates main title/heading in site 
+# -----------------------
+# BANNER TITLE
+# -----------------------
 st.markdown(
     f"""
     <div style='background-color:{banner_bg_color_hex}; padding:20px; border-radius:10px; text-align:center; margin-bottom:20px;'>
@@ -57,19 +89,8 @@ st.markdown(
     """,
     unsafe_allow_html=True)
 
-st.markdown(
-    f"""
-    <style>
-    /* Streamlit form elements primary color */
-    :root {{
-        --primary-color: {filter_accent_color_hex};
-    }}
-    </style>
-    """,
-    unsafe_allow_html=True)
-
 # -----------------------
-# EVENTS (Update site here)
+# SESSION STATE EVENTS
 # -----------------------
 if "events" not in st.session_state:
     st.session_state["events"] = [
@@ -85,9 +106,31 @@ if "events" not in st.session_state:
     ]
 
 # -----------------------
+# HELPER: Render Event Card
+# -----------------------
+def render_event_card(e, compact=False):
+    """Return HTML for an event card with gradient background."""
+    if compact:
+        return f"""
+        <div class="event-card">
+            <b>{e['name']}</b><br>
+            <small>{e['time']} @ {e['location']}</small>
+        </div>
+        """
+    else:
+        return f"""
+        <div class="event-card">
+            <b>{e['name']}</b><br>
+            <p><b>Time:</b> {e['time']}</p>
+            <p><b>Location:</b> {e['location']}</p>
+            <p><b>Description:</b> {e['description']}</p>
+        </div>
+        """
+
+# -----------------------
 # FILTERS + VIEW OPTIONS
 # -----------------------
-col1, col2 = st.columns([1, 3]) # for setting up page in ration 1:3 left and right columns
+col1, col2 = st.columns([1, 3])
 with col1:
     with st.container(key="leftbox", border=True, height=650):
         st.subheader("Filters")
@@ -105,83 +148,15 @@ with col1:
         st.subheader("View Options")
         view_mode = st.radio("Choose View", ["List View", "Grid View"], horizontal=True)
 
-# neccessary but not really used because of gradient to be placed over background
-st.html("""
-<style>
-/* Target the container by its key-generated class */
-div.st-key-leftbox {
-    background-color: black;   /* your color */
-    color: #9CCB3B;                 /* text color for contrast */
-    padding: 0.5rem;              /* optional */
-}
-</style>
-""")
-
-# needed to modify colors in checkboxes and buttons
-st.markdown(
-    f"""
-    <style>
-    /* Style checkbox labels */
-    .stCheckbox > label > div[data-testid="stMarkdownContainer"] > p {{
-        color: {container_text_color_hex} !important;
-        font-weight: 500;
-    }}
-    
-    /* Alternative selector that might work better depending on Streamlit version */
-    .stCheckbox label {{
-        color: {container_text_color_hex} !important;
-    }}
-    
-    /* Style the checkbox container text */
-    .stCheckbox > label {{
-        color: {container_text_color_hex} !important;
-    }}
-    
-    /* Style radio button labels as well if needed */
-    .stRadio > label > div[data-testid="stMarkdownContainer"] > p {{
-        color: {container_text_color_hex} !important;
-        font-weight: 500;
-    }}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# -------------------
+# -----------------------
 # LIST VIEW
-# -------------------
+# -----------------------
 with col2:
     with st.container(key="rightbox", border=True, height=650):
         if view_mode == "List View":
             st.subheader("🗓 Events")
-            # Wrap everything in a custom div
             st.markdown('<div id="listview-container">', unsafe_allow_html=True)
-            # Inject CSS for gradients
-            st.markdown("""
-            <style>
-            /* Expander header */
-            #listview-container section.stExpander > div > button {
-                background: linear-gradient(135deg, #466069, #9CCB3B) !important;
-                color: white !important;
-                font-weight: 600 !important;
-                border-radius: 10px !important;
-                padding: 8px 12px !important;
-                margin-bottom: 8px !important;
-            }
-            /* Expander body */
-            #listview-container section.stExpander > div ~ div {
-                background: linear-gradient(180deg, rgba(70,96,105,0.05), rgba(156,203,59,0.05)) !important;
-                color: white !important;
-                border-radius: 8px !important;
-                padding: 10px !important;
-            }
-            /* Day headers */
-            #listview-container h3 {
-                color: white !important;
-            }
-            </style>
-            """, unsafe_allow_html=True)
-            
+
             for d in all_dates:
                 day = d.date()
                 events_today = [
@@ -190,14 +165,12 @@ with col2:
                 if events_today:
                     st.markdown(f"### {d.strftime('%A, %B %d, %Y')}")
                     for e in events_today:
-                        with st.expander(f"**{e['name']}** ({e['category']}, {e['type']})"):
-                            st.write(f"**Time:** {e['time']}")
-                            st.write(f"**Location:** {e['location']}")
-                            st.write(f"**Description:** {e['description']}")
+                        with st.expander(f"{e['name']} ({e['category']}, {e['type']})"):
+                            st.markdown(render_event_card(e), unsafe_allow_html=True)
 
-    # -------------------
-    # GRID VIEW
-    # -------------------
+# -----------------------
+# GRID VIEW
+# -----------------------
         else:
             st.subheader("📆 Events")
 
@@ -209,51 +182,13 @@ with col2:
                 (y, m) for (y, m) in months
                 if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month][0]
 
-            # for gradient in calendar event boxes
-            st.markdown(
-                """
-                <style>
-                /* Selectbox main area */
-                div[data-baseweb="select"] > div {
-                    background: linear-gradient(135deg, #466069, #9CCB3B) !important;
-                    color: white !important;
-                    border-radius: 10px !important;
-                    font-weight: 500;
-                    
-                    /* Fix text clipping */
-                    min-height: 38px !important;   /* standard Streamlit widget height */
-                    line-height: 1.4em !important; /* text height inside */
-                    padding: 0 10px !important;    /* only left/right padding */
-                    display: flex;
-                    align-items: center;           /* vertically center text */
-                }
-
-                /* Dropdown menu */
-                ul[role="listbox"] {
-                    background: linear-gradient(135deg, #303434, #466069) !important;
-                    border-radius: 10px !important;
-                }
-
-                /* Dropdown items */
-                ul[role="listbox"] li {
-                    color: white !important;
-                    font-weight: 500;
-                    line-height: 1.4em !important;
-                    padding: 6px 10px !important;
-                }
-                </style>
-                """,
-                unsafe_allow_html=True)
-
             cal = calendar.Calendar(firstweekday=6)  # Sunday start
             month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
 
-            # Render grid to label calendar order (needs to be edited)
             weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
             st.write(" | ".join([f"**{d}**" for d in weekdays]))
             st.write("---" * 15)
 
-            # builds calendar with help of st and other imports
             for week in month_days:
                 cols = st.columns(7, gap="medium")
                 for i, day in enumerate(week):
@@ -264,53 +199,10 @@ with col2:
                                 e for e in st.session_state["events"]
                                 if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types]
                             for e in todays_events:
-                                st.markdown(
-                                    f"""<div style='background: linear-gradient(135deg, #303434, #466069);
-                                                padding:6px; 
-                                                border-radius:10px; 
-                                                margin-bottom:6px;
-                                                color: white; 
-                                                font-weight: 500;'>
-                                        <b>{e['name']}</b><br>
-                                        <small>{e['time']} @ {e['location']}</small>
-                                    </div>""",
-                                    unsafe_allow_html=True)
+                                st.markdown(render_event_card(e, compact=True), unsafe_allow_html=True)
                         else:
                             st.write(" ")
 
-# similar to previous block
-st.html("""
-<style>
-/* Target the container by its key-generated class */
-div.st-key-rightbox {
-    background-color: black;   /* your color */
-    color: #9CCB3B;                 /* text color for contrast */
-    padding: 0.5rem;              /* optional */
-}
-</style>
-""")
-
-# modifies checkmarks for selected boxes
-st.markdown(
-    f"""
-    <style>
-    /* Style checkbox labels */
-    .stCheckbox > label > div[data-testid="stMarkdownContainer"] > p {{
-        color: {container_text_color_hex} !important;
-        font-weight: 500;}}
-    /* Alternative selector that might work better depending on Streamlit version */
-    .stCheckbox label {{
-        color: {container_text_color_hex} !important;}}
-    /* Style the checkbox container text */
-    .stCheckbox > label {{
-        color: {container_text_color_hex} !important;}}
-    /* Style radio button labels as well if needed */
-    .stRadio > label > div[data-testid="stMarkdownContainer"] > p {{
-        color: {container_text_color_hex} !important;
-        font-weight: 500;}}
-    </style>
-    """,
-    unsafe_allow_html=True)
 
 
 
