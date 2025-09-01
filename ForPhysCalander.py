@@ -37,10 +37,9 @@ st.markdown(f"""
   left: 0;
   width: 100%;
   z-index: 1000;
-  padding: 10px 0;  /* give breathing room */
 }}
 main .block-container {{
-  padding-top: 80px !important; /* space below header */
+  padding-top: 100px !important; /* push content below header */
   max-width: 100% !important;
 }}
 
@@ -56,41 +55,39 @@ main .block-container {{
     padding: 0.75rem;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    height: calc(100vh - 120px); /* fit viewport */
+    overflow-y: auto;  /* independent scroll */
+    height: calc(100vh - 140px); /* full viewport minus header */
 }}
 
 /* Left column text */
 .stColumn:first-child > div {{
     color: {container_text_color_hex};
-    max-width: 260px;
-    font-size: 0.9rem;
+    max-width: 280px;
 }}
 
-/* Right column */
+/* Right column text */
 .stColumn:last-child > div {{
     color: white;
-    font-size: 0.9rem;
 }}
 
 /* Event cards */
 .event-card {{
     background: linear-gradient(135deg, #303434, #466069);
     color: white;
-    padding: 5px;
-    border-radius: 8px;
-    margin-bottom: 5px;
-    font-size: 0.85rem;
+    padding: 6px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
 }}
 
-/* Month select */
+/* Month select styling */
 div.st-key-monthbox [data-baseweb="select"] > div {{
     background: linear-gradient(135deg, #466069, #9CCB3B) !important;
     color: white !important;
     border-radius: 8px !important;
     font-weight: 500;
-    min-height: 30px !important;
-    font-size: 0.85rem !important;
+    min-height: 32px !important;
+    font-size: 0.9rem !important;
     display: flex;
     align-items: center;
 }}
@@ -100,18 +97,8 @@ div.st-key-monthbox ul[role="listbox"] {{
 }}
 div.st-key-monthbox ul[role="listbox"] li {{
     color: white !important;
-    font-size: 0.85rem !important;
+    font-size: 0.9rem !important;
     padding: 4px 8px !important;
-}}
-
-/* Calendar tightening */
-.calendar-day {{
-    min-height: 80px;  /* compact day cells */
-    padding: 2px;
-}}
-.calendar-day h4 {{
-    margin: 0;
-    font-size: 0.9rem;
 }}
 </style>
 """, unsafe_allow_html=True)
@@ -121,7 +108,7 @@ div.st-key-monthbox ul[role="listbox"] li {{
 # -----------------------
 st.markdown(
     f"""
-    <div id="fixed-header" style='background-color:{banner_bg_color_hex}; text-align:center; border-radius:0 0 10px 10px;'>
+    <div id="fixed-header" style='background-color:{banner_bg_color_hex}; padding:12px; text-align:center; border-radius:0 0 10px 10px;'>
         <h2 style='color:{banner_text_color_hex}; margin:0;'>USF Physics Fall 25 Calendar</h2>
     </div>
     """,
@@ -156,7 +143,7 @@ def render_event_card(e):
 # -----------------------
 # LAYOUT
 # -----------------------
-left, right = st.columns([1,3], gap="small")
+left, right = st.columns([1,3], gap="medium")
 
 # Left filters
 with left:
@@ -188,21 +175,22 @@ with right:
 
     weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     st.write(" | ".join([f"**{d}**" for d in weekdays]))
+    st.write("---" * 15)
 
     for week in month_days:
-        cols = st.columns(7, gap="small")
+        cols = st.columns(7, gap="medium")
         for i, day in enumerate(week):
             with cols[i]:
                 if start_date <= day <= end_date:
-                    st.markdown(f"<div class='calendar-day'><h4>{day.day}</h4>", unsafe_allow_html=True)
+                    st.markdown(f"### {day.day}")
                     todays_events = [
                         e for e in st.session_state["events"]
                         if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types]
                     for e in todays_events:
                         st.markdown(render_event_card(e), unsafe_allow_html=True)
-                    st.markdown("</div>", unsafe_allow_html=True)
                 else:
-                    st.markdown("<div class='calendar-day'></div>", unsafe_allow_html=True)
+                    st.write(" ")
+
 
 
 
