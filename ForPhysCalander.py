@@ -85,26 +85,6 @@ if "events" not in st.session_state:
 # -----------------------
 col1, col2 = st.columns([1, 3])
 
-st.markdown(
-    """
-    <style>
-    /* ✅ Force all checkbox labels to white */
-    div.stCheckbox label {
-        color: white !important;
-        font-weight: 500;
-    }
-
-    /* ✅ Force all radio button labels to white */
-    div.stRadio label {
-        color: white !important;
-        font-weight: 500;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-
 with col1:
     with st.container(key="leftbox", border=True, height=650):
         st.subheader("Filters")
