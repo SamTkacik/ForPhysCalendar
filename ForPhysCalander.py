@@ -245,6 +245,28 @@ with col2:
                         else:
                             st.write(" ")
 
+st.markdown("---")
+st.subheader("Event Placement Reqests")
+
+with st.form("event_request_form"):
+    name = st.text_input("Your name")
+    email = st.text_input("Your email")
+    message = st.text_area("Event details, please include organizers, date and time, location, and a brief description")
+
+    submitted = st.form_submit_button("Send Request")
+    if submitted:
+        # Send data to Google Sheets
+        import requests
+        sheet_url = "https://script.google.com/macros/s/your-app-script-id/exec"
+        data = {"name": name, "email": email, "message": message}
+        r = requests.post(sheet_url, data=data)
+
+        if r.status_code == 200:
+            st.success("✅ Thanks! Your request has been submitted.")
+        else:
+            st.error("❌ Could not send your request. Please try again later.")
+
+
 
 
 
