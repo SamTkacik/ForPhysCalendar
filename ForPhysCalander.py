@@ -15,9 +15,6 @@ start_date = datetime.date(2025, 8, 1)
 end_date = datetime.date(2025, 12, 31)
 all_dates = pd.date_range(start_date, end_date).to_list()
 
-# -----------------------
-# COLORS
-# -----------------------
 banner_text_color_hex = "#9CCB3B"
 banner_bg_color_hex = "black"
 event_card_text_color_hex = "#FFFFFF"
@@ -144,19 +141,13 @@ with col1:
         select_all_types = st.checkbox("Select/Deselect All Event Types", value=True)
         selected_types = TYPE_OPTIONS if select_all_types else [
             t for t in TYPE_OPTIONS if st.checkbox(t, value=True, key=f"type_{t}")]
-        # View selector
-        st.subheader("View Options")
-        view_mode = st.radio("Choose View", ["List View", "Grid View"], horizontal=True)
 
-# -----------------------
-# LIST VIEW
-# -----------------------
 with col2:
     with st.container(key="rightbox", border=True, height=650):
 # -----------------------
 # GRID VIEW
 # -----------------------
-        st.subheader("📆 Events")
+        st.subheader("Events")
 
         months = sorted(set((d.year, d.month) for d in all_dates))
         chosen_month = st.selectbox(
