@@ -4,7 +4,7 @@ import datetime
 import calendar
 
 # -----------------------
-# MASTER SETTINGS
+# SETTINGS
 # -----------------------
 st.set_page_config(layout="wide")
 
@@ -15,25 +15,22 @@ start_date = datetime.date(2025, 8, 1)
 end_date = datetime.date(2025, 12, 31)
 all_dates = pd.date_range(start_date, end_date).to_list()
 
-# -----------------------
-# COLORS
-# -----------------------
-banner_text_color_hex = "#9CCB3B"        # title/main heading
+banner_text_color_hex = "#9CCB3B"
 banner_bg_color_hex = "black"
 container_text_color_hex = "#9CCB3B"
 
 # -----------------------
-# GLOBAL STYLES
+# CSS
 # -----------------------
 st.markdown(f"""
 <style>
-/* App background gradient */
+/* Background gradient */
 .stApp {{
   background: linear-gradient(135deg, #CAD2D8, #7E96A0, #303434);
 }}
 .stApp > header {{ background-color: transparent; }}
 
-/* Fixed header at top */
+/* Fixed header */
 #fixed-header {{
   position: fixed;
   top: 0;
@@ -41,48 +38,39 @@ st.markdown(f"""
   width: 100%;
   z-index: 1000;
 }}
-
-/* Push main content below header */
 main .block-container {{
-  padding-top: 100px !important;
+  padding-top: 100px !important; /* push content below header */
   max-width: 100% !important;
 }}
 
-/* Two fixed side-by-side panels */
-.fixed-columns {{
-  display: flex;
-  gap: 1rem;
-  height: calc(100vh - 120px); /* viewport height minus header */
+/* Columns equal height */
+.stColumns {{
+    display: flex !important;
+    align-items: stretch !important;
+    gap: 1rem !important;
+}}
+.stColumn > div {{
+    background-color: black;
+    border-radius: 10px;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;  /* independent scroll */
+    height: calc(100vh - 140px); /* full viewport minus header */
 }}
 
-.left-panel, .right-panel {{
-  flex: 1;
-  background-color: black;
-  border-radius: 10px;
-  padding: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;  /* independent scroll */
+/* Left column text */
+.stColumn:first-child > div {{
+    color: {container_text_color_hex};
+    max-width: 280px;
 }}
 
-.left-panel {{
-  max-width: 280px;
-  color: {container_text_color_hex};
+/* Right column text */
+.stColumn:last-child > div {{
+    color: white;
 }}
 
-.right-panel {{
-  flex: 3;
-  color: white;
-}}
-
-/* Checkbox + radio labels */
-.stCheckbox label, .stRadio label {{
-    color: {container_text_color_hex} !important;
-    font-weight: 500 !important;
-    font-size: 0.9rem !important;
-}}
-
-/* Gradient event card */
+/* Event cards */
 .event-card {{
     background: linear-gradient(135deg, #303434, #466069);
     color: white;
@@ -128,7 +116,7 @@ st.markdown(
 )
 
 # -----------------------
-# SESSION STATE EVENTS
+# EVENTS
 # -----------------------
 if "events" not in st.session_state:
     st.session_state["events"] = [
@@ -143,9 +131,6 @@ if "events" not in st.session_state:
         }
     ]
 
-# -----------------------
-# HELPER: Render Event Card
-# -----------------------
 def render_event_card(e):
     return f"""
     <div class="event-card">
@@ -156,13 +141,12 @@ def render_event_card(e):
     """
 
 # -----------------------
-# FIXED TWO-COLUMN LAYOUT
+# LAYOUT
 # -----------------------
-st.markdown('<div class="fixed-columns">', unsafe_allow_html=True)
+left, right = st.columns([1,3], gap="medium")
 
-# LEFT PANEL
-with st.container():
-    st.markdown('<div class="left-panel">', unsafe_allow_html=True)
+# Left filters
+with left:
     st.subheader("Filters")
     select_all_categories = st.checkbox("All Organizations", value=True)
     selected_categories = CATEGORY_OPTIONS if select_all_categories else [
@@ -171,11 +155,9 @@ with st.container():
     select_all_types = st.checkbox("All Event Types", value=True)
     selected_types = TYPE_OPTIONS if select_all_types else [
         t for t in TYPE_OPTIONS if st.checkbox(t, value=True, key=f"type_{t}")]
-    st.markdown('</div>', unsafe_allow_html=True)
 
-# RIGHT PANEL
-with st.container():
-    st.markdown('<div class="right-panel">', unsafe_allow_html=True)
+# Right calendar
+with right:
     st.subheader("📆 Events")
 
     months = sorted(set((d.year, d.month) for d in all_dates))
@@ -209,9 +191,6 @@ with st.container():
                 else:
                     st.write(" ")
 
-    st.markdown('</div>', unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)  # close fixed-columns
 
 
 
