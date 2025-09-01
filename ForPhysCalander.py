@@ -18,7 +18,7 @@ all_dates = pd.date_range(start_date, end_date).to_list()
 # -----------------------
 # COLORS
 # -----------------------
-banner_text_color_hex = "#9CCB3B"
+banner_text_color_hex = "#9CCB3B"        # title/main heading
 banner_bg_color_hex = "black"
 event_card_text_color_hex = "#FFFFFF"
 filter_accent_color_hex = "#9CCB3B"
@@ -28,55 +28,106 @@ container_text_color_hex = "#9CCB3B"
 # -----------------------
 # GLOBAL STYLES
 # -----------------------
-st.markdown("""
+st.markdown(f"""
 <style>
 /* App background gradient */
-.stApp {
+.stApp {{
   background: linear-gradient(135deg, #CAD2D8, #7E96A0, #303434);
-}
-.stApp > header {background-color: transparent;}
+}}
+.stApp > header {{ background-color: transparent; }}
 
-/* Gradient event card (shared) */
-.event-card {
+/* Make page content fill viewport height so columns can stretch */
+main .block-container {{
+  min-height: 100vh;
+}}
+
+/* Sidebar-like container styles + make them stretch to bottom */
+div.st-key-leftbox, div.st-key-rightbox {{
+    background-color: black;
+    color: #9CCB3B;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    /* Stretch to bottom (adjust 220px if your header/content spacing changes) */
+    min-height: calc(100vh - 220px);
+    display: flex;
+    flex-direction: column;
+}}
+
+/* Checkbox + radio labels */
+.stCheckbox label, .stRadio label {{
+    color: {container_text_color_hex} !important;
+    font-weight: 500 !important;
+}}
+
+/* Shared gradient event card */
+.event-card {{
     background: linear-gradient(135deg, #303434, #466069);
     color: white;
     padding: 6px;
     border-radius: 10px;
     margin-bottom: 6px;
     font-weight: 500;
-}
+}}
 
-/* Expander header */
-div[data-testid="stExpander"] > div:first-child {
+/* ====== LIST VIEW EXPANDER: robust header + body styling ====== */
+
+/* Header clickable area – match several Streamlit variants */
+#listview-container [data-testid="stExpander"] > div:first-child,
+#listview-container [data-testid="stExpander"] > div > button,
+#listview-container [data-testid="stExpander"] summary,
+#listview-container [data-testid="stExpander"] [data-testid="stExpanderToggle"] {{
     background: linear-gradient(135deg, #466069, #9CCB3B) !important;
     color: white !important;
     font-weight: 600 !important;
     border-radius: 10px !important;
     padding: 8px 12px !important;
     margin-bottom: 8px !important;
-}
-/* Expander body */
-div[data-testid="stExpander"] > div:nth-child(2) {
+    border: none !important;
+}}
+
+/* Ensure header text/icons inside the header are white */
+#listview-container [data-testid="stExpander"] > div:first-child * {{
+    color: white !important;
+}}
+
+/* Body/content area (expander content) – match variants */
+#listview-container [data-testid="stExpander"] [data-testid="stExpanderContent"],
+#listview-container [data-testid="stExpander"] > div:nth-child(2) {{
     background: linear-gradient(180deg, rgba(70,96,105,0.15), rgba(156,203,59,0.15)) !important;
     color: white !important;
     border-radius: 8px !important;
     padding: 10px !important;
-}
+}}
 
-/* Sidebar-like container styles */
-div.st-key-leftbox, div.st-key-rightbox {
-    background-color: black;
-    color: #9CCB3B;
-    padding: 0.5rem;
-}
+/* Day headers in list view */
+#listview-container h3 {{
+    color: white !important;
+}}
 
-/* Checkbox + radio labels */
-.stCheckbox label, .stRadio label {
-    color: %s !important;
-    font-weight: 500 !important;
-}
+/* ====== MONTH SELECT: restore gradient styling, scoped to container key ====== */
+div.st-key-monthbox [data-baseweb="select"] > div {{
+    background: linear-gradient(135deg, #466069, #9CCB3B) !important;
+    color: white !important;
+    border-radius: 10px !important;
+    font-weight: 500;
+    min-height: 38px !important;
+    line-height: 1.4em !important;
+    padding: 0 10px !important;
+    display: flex;
+    align-items: center;
+}}
+div.st-key-monthbox ul[role="listbox"] {{
+    background: linear-gradient(135deg, #303434, #466069) !important;
+    border-radius: 10px !important;
+}}
+div.st-key-monthbox ul[role="listbox"] li {{
+    color: white !important;
+    font-weight: 500;
+    line-height: 1.4em !important;
+    padding: 6px 10px !important;
+}}
 </style>
-""" % container_text_color_hex, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # -----------------------
 # BANNER TITLE
@@ -87,7 +138,8 @@ st.markdown(
         <h1 style='color:{banner_text_color_hex}; margin:0;'>USF Physics Fall 25 Calendar</h1>
     </div>
     """,
-    unsafe_allow_html=True)
+    unsafe_allow_html=True
+)
 
 # -----------------------
 # SESSION STATE EVENTS
@@ -132,7 +184,8 @@ def render_event_card(e, compact=False):
 # -----------------------
 col1, col2 = st.columns([1, 3])
 with col1:
-    with st.container(key="leftbox", border=True, height=650):
+    # removed fixed height=650 so CSS min-height can stretch to viewport
+    with st.container(key="leftbox", border=True):
         st.subheader("Filters")
         # Org filters
         st.markdown("**Filter by Organization:**")
@@ -148,12 +201,16 @@ with col1:
         st.subheader("View Options")
         view_mode = st.radio("Choose View", ["List View", "Grid View"], horizontal=True)
 
-# -----------------------
-# LIST VIEW
-# -----------------------
+# -------------------
+# RIGHT COLUMN
+# -------------------
 with col2:
-    with st.container(key="rightbox", border=True, height=650):
+    # removed fixed height=650 so CSS min-height can stretch to viewport
+    with st.container(key="rightbox", border=True):
         if view_mode == "List View":
+            # -------------------
+            # LIST VIEW
+            # -------------------
             st.subheader("🗓 Events")
             st.markdown('<div id="listview-container">', unsafe_allow_html=True)
 
@@ -165,19 +222,23 @@ with col2:
                 if events_today:
                     st.markdown(f"### {d.strftime('%A, %B %d, %Y')}")
                     for e in events_today:
+                        # The header of this expander now shows the gradient (CSS above)
                         with st.expander(f"{e['name']} ({e['category']}, {e['type']})"):
                             st.markdown(render_event_card(e), unsafe_allow_html=True)
 
-# -----------------------
-# GRID VIEW
-# -----------------------
         else:
+            # -------------------
+            # GRID VIEW
+            # -------------------
             st.subheader("📆 Events")
 
             months = sorted(set((d.year, d.month) for d in all_dates))
-            chosen_month = st.selectbox(
-                "Select Month",
-                [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months])
+            # Scope the selectbox in a keyed container so CSS only affects this widget
+            with st.container(key="monthbox"):
+                chosen_month = st.selectbox(
+                    "Select Month",
+                    [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months]
+                )
             chosen_year, chosen_month_num = [
                 (y, m) for (y, m) in months
                 if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month][0]
@@ -202,6 +263,7 @@ with col2:
                                 st.markdown(render_event_card(e, compact=True), unsafe_allow_html=True)
                         else:
                             st.write(" ")
+
 
 
 
