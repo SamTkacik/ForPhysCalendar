@@ -196,11 +196,13 @@ with col2:
                     color: white !important;
                     border-radius: 10px !important;
                     font-weight: 500;
-                    line-height: 1.6em !important;   /* keeps text from being cut off */
-                    padding-top: 6px !important;     /* small vertical buffer */
-                    padding-bottom: 6px !important;
-                    padding-left: 8px !important;
-                    padding-right: 8px !important;
+                    
+                    /* ✅ Fix clipping */
+                    min-height: 38px !important;   /* standard Streamlit widget height */
+                    line-height: 1.4em !important; /* text height inside */
+                    padding: 0 10px !important;    /* only left/right padding */
+                    display: flex;
+                    align-items: center;           /* vertically center text */
                 }
 
                 /* Dropdown menu */
@@ -213,12 +215,13 @@ with col2:
                 ul[role="listbox"] li {
                     color: white !important;
                     font-weight: 500;
+                    line-height: 1.4em !important;
+                    padding: 6px 10px !important;
                 }
                 </style>
                 """,
                 unsafe_allow_html=True
             )
-
 
             cal = calendar.Calendar(firstweekday=6)  # Sunday start
             month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
