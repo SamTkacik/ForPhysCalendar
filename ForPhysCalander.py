@@ -242,20 +242,8 @@ with col2:
                                 if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types
                             ]
                             for e in todays_events:
-                                """
                                 st.markdown(
-                                    f"""
-                              #      <div style='background-color:#e6f2ff; padding:6px; 
-                               #     border-radius:6px; margin-bottom:6px;'>
-                                #        <b>{e['name']}</b><br>
-                                 #       <small>{e['time']} @ {e['location']}</small>
-                                  #  </div>
-                                   # """,
-                                #    unsafe_allow_html=True
-                                #)"""
-                                st.markdown(
-                                    f"""
-                                    <div style='background: linear-gradient(135deg, #303434, #466069);
+                                    f"""<div style='background: linear-gradient(135deg, #303434, #466069);
                                                 padding:6px; 
                                                 border-radius:10px; 
                                                 margin-bottom:6px;
@@ -263,8 +251,7 @@ with col2:
                                                 font-weight: 500;'>
                                         <b>{e['name']}</b><br>
                                         <small>{e['time']} @ {e['location']}</small>
-                                    </div>
-                                    """,
+                                    </div>""",
                                     unsafe_allow_html=True
                                 )
                         else:
@@ -311,5 +298,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 
