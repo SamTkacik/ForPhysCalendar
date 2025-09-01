@@ -186,6 +186,30 @@ with col2:
                 if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month
             ][0]
 
+            # ✅ Now add gradient styling for selectbox
+            st.markdown(
+                """
+                <style>
+                div[data-baseweb="select"] > div {
+                    background: linear-gradient(135deg, #7E96A0, #466069, #9CCB3B) !important;
+                    color: white !important;
+                    border-radius: 10px !important;
+                    padding: 4px 8px !important;
+                    font-weight: 500;
+                }
+                ul[role="listbox"] {
+                    background: linear-gradient(135deg, #303434, #466069) !important;
+                    border-radius: 10px !important;
+                }
+                ul[role="listbox"] li {
+                    color: white !important;
+                    font-weight: 500;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True
+            )
+
             cal = calendar.Calendar(firstweekday=6)  # Sunday start
             month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
 
@@ -205,10 +229,25 @@ with col2:
                                 if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types
                             ]
                             for e in todays_events:
+                                """
                                 st.markdown(
                                     f"""
-                                    <div style='background-color:#e6f2ff; padding:6px; 
-                                    border-radius:6px; margin-bottom:6px;'>
+                              #      <div style='background-color:#e6f2ff; padding:6px; 
+                               #     border-radius:6px; margin-bottom:6px;'>
+                                #        <b>{e['name']}</b><br>
+                                 #       <small>{e['time']} @ {e['location']}</small>
+                                  #  </div>
+                                   # """,
+                                #    unsafe_allow_html=True
+                                #)"""
+                                st.markdown(
+                                    f"""
+                                    <div style='background: linear-gradient(135deg, #303434, #466069);
+                                                padding:6px; 
+                                                border-radius:10px; 
+                                                margin-bottom:6px;
+                                                color: white; 
+                                                font-weight: 500;'>
                                         <b>{e['name']}</b><br>
                                         <small>{e['time']} @ {e['location']}</small>
                                     </div>
