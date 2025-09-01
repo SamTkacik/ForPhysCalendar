@@ -37,7 +37,6 @@ st.markdown(f"""
 main .block-container {{
   min-height: 100vh;
 }}
-
 /* Sidebar-like container styles + make them stretch to bottom */
 div.st-key-leftbox, div.st-key-rightbox {{
     background-color: black;
@@ -49,13 +48,11 @@ div.st-key-leftbox, div.st-key-rightbox {{
     display: flex;
     flex-direction: column;
 }}
-
 /* Checkbox + radio labels */
 .stCheckbox label, .stRadio label {{
     color: {container_text_color_hex} !important;
     font-weight: 500 !important;
 }}
-
 /* Shared gradient event card */
 .event-card {{
     background: linear-gradient(135deg, #303434, #466069);
@@ -65,9 +62,7 @@ div.st-key-leftbox, div.st-key-rightbox {{
     margin-bottom: 6px;
     font-weight: 500;
 }}
-
 /* ====== LIST VIEW EXPANDER: robust header + body styling ====== */
-
 /* Header clickable area – match several Streamlit variants */
 #listview-container [data-testid="stExpander"] > div:first-child,
 #listview-container [data-testid="stExpander"] > div > button,
@@ -81,12 +76,10 @@ div.st-key-leftbox, div.st-key-rightbox {{
     margin-bottom: 8px !important;
     border: none !important;
 }}
-
 /* Ensure header text/icons inside the header are white */
 #listview-container [data-testid="stExpander"] > div:first-child * {{
     color: white !important;
 }}
-
 /* Body/content area (expander content) – match variants */
 #listview-container [data-testid="stExpander"] [data-testid="stExpanderContent"],
 #listview-container [data-testid="stExpander"] > div:nth-child(2) {{
@@ -95,12 +88,10 @@ div.st-key-leftbox, div.st-key-rightbox {{
     border-radius: 8px !important;
     padding: 10px !important;
 }}
-
 /* Day headers in list view */
 #listview-container h3 {{
     color: white !important;
 }}
-
 /* ====== MONTH SELECT: restore gradient styling, scoped to container key ====== */
 div.st-key-monthbox [data-baseweb="select"] > div {{
     background: linear-gradient(135deg, #466069, #9CCB3B) !important;
@@ -126,6 +117,19 @@ div.st-key-monthbox ul[role="listbox"] li {{
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <style>
+    [data-testid="stContainer"][key="leftbox"] {
+        height: 650px;
+        overflow-y: auto; /* scroll if content exceeds */
+    }
+    [data-testid="stContainer"][key="rightbox"] {
+        height: 650px;
+        overflow-y: auto;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # -----------------------
 # BANNER TITLE
 # -----------------------
@@ -135,8 +139,7 @@ st.markdown(
         <h1 style='color:{banner_text_color_hex}; margin:0;'>USF Physics Fall 25 Calendar</h1>
     </div>
     """,
-    unsafe_allow_html=True
-)
+    unsafe_allow_html=True)
 
 # -----------------------
 # SESSION STATE EVENTS
@@ -177,7 +180,7 @@ def render_event_card(e, compact=False):
         """
 
 # -----------------------
-# FILTERS + VIEW OPTIONS
+# FILTERS 
 # -----------------------
 col1, col2 = st.columns([1, 3])
 with col1:
@@ -221,8 +224,12 @@ with col2:
             month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
 
             weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-            st.write(" | ".join([f"**{d}**" for d in weekdays]))
-            st.write("---" * 15)
+            # Header row using same column structure
+            cols = st.columns(7, gap="medium")
+            for i, d in enumerate(weekdays):
+                with cols[i]:
+                    st.markdown(f"**{d}**")  # bold weekday name
+            st.write("---" * 15)  # optional separator
 
             for week in month_days:
                 cols = st.columns(7, gap="medium")
