@@ -15,9 +15,6 @@ start_date = datetime.date(2025, 8, 1)
 end_date = datetime.date(2025, 12, 31)
 all_dates = pd.date_range(start_date, end_date).to_list()
 
-# -----------------------
-# COLORS
-# -----------------------
 banner_text_color_hex = "#9CCB3B"        # title/main heading
 banner_bg_color_hex = "black"
 event_card_text_color_hex = "#FFFFFF"
@@ -197,9 +194,6 @@ with col1:
         select_all_types = st.checkbox("Select/Deselect All Event Types", value=True)
         selected_types = TYPE_OPTIONS if select_all_types else [
             t for t in TYPE_OPTIONS if st.checkbox(t, value=True, key=f"type_{t}")]
-        # View selector
-        st.subheader("View Options")
-        view_mode = st.radio("Choose View", ["List View", "Grid View"], horizontal=True)
 
 # -------------------
 # RIGHT COLUMN
@@ -207,26 +201,6 @@ with col1:
 with col2:
     # removed fixed height=650 so CSS min-height can stretch to viewport
     with st.container(key="rightbox", border=True):
-        if view_mode == "List View":
-            # -------------------
-            # LIST VIEW
-            # -------------------
-            st.subheader("🗓 Events")
-            st.markdown('<div id="listview-container">', unsafe_allow_html=True)
-
-            for d in all_dates:
-                day = d.date()
-                events_today = [
-                    e for e in st.session_state["events"]
-                    if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types]
-                if events_today:
-                    st.markdown(f"### {d.strftime('%A, %B %d, %Y')}")
-                    for e in events_today:
-                        # The header of this expander now shows the gradient (CSS above)
-                        with st.expander(f"{e['name']} ({e['category']}, {e['type']})"):
-                            st.markdown(render_event_card(e), unsafe_allow_html=True)
-
-        else:
             # -------------------
             # GRID VIEW
             # -------------------
