@@ -244,43 +244,14 @@ with col2:
                                 st.markdown(render_event_card(e, compact=True), unsafe_allow_html=True)
                         else:
                             st.write(" ")
-
-st.markdown("---")
-st.subheader("Event Placement Reqests")
-st.markdown("""
-    <style>
-    /* Target text inputs */
-    div[data-testid="stTextInput"] input {
-        background-color: black;
-        color: white;
-        border-radius: 8px;
-        border: 1px solid #444;
-        padding: 6px;
-    }
-
-    /* Target text areas */
-    div[data-testid="stTextArea"] textarea {
-        background-color: black;
-        color: white;
-        border-radius: 8px;
-        border: 1px solid #444;
-        padding: 6px;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
 st.markdown("---")
 st.subheader("Request an Event")
 
-google_form_url = "https://forms.gle/dmU8UfxZaBkgE7bU9"
 st.markdown(
-    f"""
-    <iframe src="{google_form_url}" width="700" height="800" frameborder="0" marginheight="0" marginwidth="0">
-    Loading…
-    </iframe>
-    """,
-    unsafe_allow_html=True,
+    "Fill out this form to request a new event:\n\n"
+    "[Click here to open request form](https://forms.gle/rqTyiU4EXt2mowg6A)"
 )
+
 
 
 
