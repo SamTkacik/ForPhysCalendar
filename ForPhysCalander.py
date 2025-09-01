@@ -257,6 +257,48 @@ with col2:
                         else:
                             st.write(" ")
 
+st.markdown(
+    """
+    <style>
+    /* 🔹 Dropdown header (the closed box) */
+    div[data-baseweb="select"] > div {
+        background: linear-gradient(135deg, #466069, #9CCB3B) !important;
+        color: white !important;
+        border-radius: 10px !important;
+        font-weight: 500;
+        
+        /* keep text visible and centered */
+        min-height: 38px !important;
+        line-height: 1.4em !important;
+        padding: 0 10px !important;
+        display: flex;
+        align-items: center;
+    }
+
+    /* 🔹 Dropdown menu (the expanded area) */
+    ul[role="listbox"] {
+        background: linear-gradient(135deg, #303434, #466069) !important;
+        border-radius: 10px !important;
+    }
+
+    /* 🔹 Dropdown items (each option) */
+    ul[role="listbox"] li {
+        color: #FFFFFF !important;   /* text color */
+        font-weight: 500;
+        line-height: 1.4em !important;
+        padding: 6px 10px !important;
+    }
+
+    /* 🔹 On hover, give items a highlight */
+    ul[role="listbox"] li:hover {
+        background-color: rgba(255,255,255,0.15) !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
 st.html("""
 <style>
 /* Target the container by its key-generated class */
