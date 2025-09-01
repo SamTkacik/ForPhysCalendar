@@ -1,35 +1,40 @@
+#cal test 
 import streamlit as st
 import pandas as pd
 import datetime
 import calendar
 
 # -----------------------
-# 🔧 MASTER SETTINGS
+# MASTER SETTINGS
 # -----------------------
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide") # uses full page
 
+# for classifying events in calendar
 CATEGORY_OPTIONS = ["Department of Physics", "PGSC", "SPS", "GAU", "Other"]
 TYPE_OPTIONS = ['Academic/Professional', 'Recreational', 'Interdisciplinary', 'Other']
 
+# update each semester
 start_date = datetime.date(2025, 8, 1)
 end_date = datetime.date(2025, 12, 31)
 all_dates = pd.date_range(start_date, end_date).to_list()
 
 # -----------------------
-# Banner Title (ALWAYS FIRST)
+# Banner Title (ALWAYS FIRST, st outputs in same order as code)
 # -----------------------
+# st.color_picker makes colors interactive in site instead of absolute
 #banner_text_color_hex = st.color_picker("Banner Text Color", "#9CCB3B")  # default white
 #banner_bg_color_hex = st.color_picker("Banner Background Color", "#303434")  # default navy
 #event_card_text_color_hex = st.color_picker("Event Card Text Color", "#000000")  # default black
 #event_card_bg_color_hex = st.color_picker("Event Card Background Color", "#E0E0E0")  # default light gray
-banner_text_color_hex = "#9CCB3B"       # white text
-banner_bg_color_hex = 'black' #"#466069"         # 
+banner_text_color_hex = "#9CCB3B"       # for title/main heading
+banner_bg_color_hex = 'black' #"#466069" not used when gradient is placed later on
 event_card_text_color_hex = "#000000"   # black text for event cards
 event_card_bg_color_hex = "#E0E0E0"     # light gray background for event cards
 filter_accent_color_hex = "#9CCB3B"
 container_bg_color_hex = "#466069"
 container_text_color_hex = "#9CCB3B"
 
+# does large background over page, creates gradient at 135 degrees and takes many colors (currently 3)
 st.markdown("""
 <style>
 /* Apply a gradient to the whole app background */
@@ -43,14 +48,14 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+#creates main title/heading in site 
 st.markdown(
     f"""
     <div style='background-color:{banner_bg_color_hex}; padding:20px; border-radius:10px; text-align:center; margin-bottom:20px;'>
-        <h1 style='color:{banner_text_color_hex}; margin:0;'>USF Physics Calendar - Fall 2025</h1>
+        <h1 style='color:{banner_text_color_hex}; margin:0;'>USF Physics Fall 25 Calendar</h1>
     </div>
     """,
-    unsafe_allow_html=True
-)
+    unsafe_allow_html=True)
 
 st.markdown(
     f"""
@@ -61,11 +66,10 @@ st.markdown(
     }}
     </style>
     """,
-    unsafe_allow_html=True
-)
+    unsafe_allow_html=True)
 
 # -----------------------
-# EVENTS (Hard-coded for now)
+# EVENTS (Update site here)
 # -----------------------
 if "events" not in st.session_state:
     st.session_state["events"] = [
@@ -83,30 +87,25 @@ if "events" not in st.session_state:
 # -----------------------
 # FILTERS + VIEW OPTIONS
 # -----------------------
-col1, col2 = st.columns([1, 3])
-
+col1, col2 = st.columns([1, 3]) # for setting up page in ration 1:3 left and right columns
 with col1:
     with st.container(key="leftbox", border=True, height=650):
         st.subheader("Filters")
-
         # Org filters
         st.markdown("**Filter by Organization:**")
         select_all_categories = st.checkbox("Select/Deselect All Organizations", value=True)
         selected_categories = CATEGORY_OPTIONS if select_all_categories else [
-            cat for cat in CATEGORY_OPTIONS if st.checkbox(cat, value=True, key=f"cat_{cat}")
-        ]
-
+            cat for cat in CATEGORY_OPTIONS if st.checkbox(cat, value=True, key=f"cat_{cat}")]
         # Type filters
         st.markdown("**Filter by Event Type:**")
         select_all_types = st.checkbox("Select/Deselect All Event Types", value=True)
         selected_types = TYPE_OPTIONS if select_all_types else [
-            t for t in TYPE_OPTIONS if st.checkbox(t, value=True, key=f"type_{t}")
-        ]
-
+            t for t in TYPE_OPTIONS if st.checkbox(t, value=True, key=f"type_{t}")]
         # View selector
         st.subheader("View Options")
-        view_mode = st.radio("Choose view:", ["List View", "Grid View"], horizontal=True)
+        view_mode = st.radio("Choose View", ["List View", "Grid View"], horizontal=True)
 
+# neccessary but not really used because of gradient to be placed over background
 st.html("""
 <style>
 /* Target the container by its key-generated class */
@@ -118,8 +117,7 @@ div.st-key-leftbox {
 </style>
 """)
 
-# Add this CSS block after your existing st.markdown styling blocks
-
+# needed to modify colors in checkboxes and buttons
 st.markdown(
     f"""
     <style>
@@ -156,8 +154,7 @@ with col2:
     with st.container(key="rightbox", border=True, height=650):
         if view_mode == "List View":
             st.subheader("🗓 Events")
-
-            # 🔹 Minimal CSS for List View
+            # used to modify labels in list view, not currently working properly
             st.markdown(
                 """
                 <style>
@@ -233,14 +230,12 @@ with col2:
             months = sorted(set((d.year, d.month) for d in all_dates))
             chosen_month = st.selectbox(
                 "Select Month",
-                [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months]
-            )
+                [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months])
             chosen_year, chosen_month_num = [
                 (y, m) for (y, m) in months
-                if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month
-            ][0]
+                if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month][0]
 
-            # ✅ Now add gradient styling for selectbox
+            # for gradient in calendar event boxes
             st.markdown(
                 """
                 <style>
@@ -251,7 +246,7 @@ with col2:
                     border-radius: 10px !important;
                     font-weight: 500;
                     
-                    /* ✅ Fix clipping */
+                    /* Fix text clipping */
                     min-height: 38px !important;   /* standard Streamlit widget height */
                     line-height: 1.4em !important; /* text height inside */
                     padding: 0 10px !important;    /* only left/right padding */
@@ -274,17 +269,17 @@ with col2:
                 }
                 </style>
                 """,
-                unsafe_allow_html=True
-            )
+                unsafe_allow_html=True)
 
             cal = calendar.Calendar(firstweekday=6)  # Sunday start
             month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
 
-            # Render grid
+            # Render grid to label calendar order (needs to be edited)
             weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
             st.write(" | ".join([f"**{d}**" for d in weekdays]))
             st.write("---" * 15)
 
+            # builds calendar with help of st and other imports
             for week in month_days:
                 cols = st.columns(7, gap="medium")
                 for i, day in enumerate(week):
@@ -293,8 +288,7 @@ with col2:
                             st.markdown(f"### {day.day}")
                             todays_events = [
                                 e for e in st.session_state["events"]
-                                if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types
-                            ]
+                                if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types]
                             for e in todays_events:
                                 st.markdown(
                                     f"""<div style='background: linear-gradient(135deg, #303434, #466069);
@@ -306,12 +300,11 @@ with col2:
                                         <b>{e['name']}</b><br>
                                         <small>{e['time']} @ {e['location']}</small>
                                     </div>""",
-                                    unsafe_allow_html=True
-                                )
+                                    unsafe_allow_html=True)
                         else:
                             st.write(" ")
 
-
+# similar to previous block
 st.html("""
 <style>
 /* Target the container by its key-generated class */
@@ -323,36 +316,27 @@ div.st-key-rightbox {
 </style>
 """)
 
-# Add this CSS block after your existing st.markdown styling blocks
-
+# modifies checkmarks for selected boxes
 st.markdown(
     f"""
     <style>
     /* Style checkbox labels */
     .stCheckbox > label > div[data-testid="stMarkdownContainer"] > p {{
         color: {container_text_color_hex} !important;
-        font-weight: 500;
-    }}
-    
+        font-weight: 500;}}
     /* Alternative selector that might work better depending on Streamlit version */
     .stCheckbox label {{
-        color: {container_text_color_hex} !important;
-    }}
-    
+        color: {container_text_color_hex} !important;}}
     /* Style the checkbox container text */
     .stCheckbox > label {{
-        color: {container_text_color_hex} !important;
-    }}
-    
+        color: {container_text_color_hex} !important;}}
     /* Style radio button labels as well if needed */
     .stRadio > label > div[data-testid="stMarkdownContainer"] > p {{
         color: {container_text_color_hex} !important;
-        font-weight: 500;
-    }}
+        font-weight: 500;}}
     </style>
     """,
-    unsafe_allow_html=True
-)
+    unsafe_allow_html=True)
 
 
 
