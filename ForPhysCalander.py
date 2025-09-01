@@ -280,17 +280,18 @@ with st.form("event_request_form"):
     if submitted:
         import requests
 
-        sheet_url = "https://script.google.com/macros/s/AKfycbztJGL--9ZxShbQwPaBMMPzeDdnoESR1HgV4iWend9lyTqDZSbZalsYoEomuLSXv6w-TQ/exec"
+        sheet_url = "https://script.google.com/macros/s/AKfycbwUTVV_DJzWhYTG74FbZrLhfI1AI9Thy4vkz8sqpgLU8Avnq7Et8cDaavA6G0YuQv8VUw/exec"  # <-- paste updated Web App URL here
         data = {"name": name, "email": email, "message": message}
 
         try:
-            r = requests.post(sheet_url, json=data)  # ✅ send JSON instead of form-data
+            r = requests.post(sheet_url, json=data)  # send JSON
             if r.status_code == 200:
                 st.success("✅ Thanks! Your request has been submitted.")
             else:
                 st.error(f"❌ Error {r.status_code}: Could not send your request.")
         except Exception as e:
             st.error(f"⚠️ Request failed: {e}")
+
 
 
 
