@@ -190,17 +190,26 @@ with col2:
             st.markdown(
                 """
                 <style>
+                /* Selectbox main area */
                 div[data-baseweb="select"] > div {
-                    background: linear-gradient(135deg, #7E96A0, #466069, #9CCB3B) !important;
+                    background: linear-gradient(135deg, #466069, #9CCB3B) !important;
                     color: white !important;
                     border-radius: 10px !important;
-                    padding: 4px 8px !important;
                     font-weight: 500;
+                    line-height: 1.6em !important;   /* keeps text from being cut off */
+                    padding-top: 6px !important;     /* small vertical buffer */
+                    padding-bottom: 6px !important;
+                    padding-left: 8px !important;
+                    padding-right: 8px !important;
                 }
+
+                /* Dropdown menu */
                 ul[role="listbox"] {
                     background: linear-gradient(135deg, #303434, #466069) !important;
                     border-radius: 10px !important;
                 }
+
+                /* Dropdown items */
                 ul[role="listbox"] li {
                     color: white !important;
                     font-weight: 500;
@@ -209,6 +218,7 @@ with col2:
                 """,
                 unsafe_allow_html=True
             )
+
 
             cal = calendar.Calendar(firstweekday=6)  # Sunday start
             month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
