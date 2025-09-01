@@ -322,7 +322,7 @@ def render_event_detail_page(e):
 # -----------------------
 # ROUTING (Calendar vs Event Detail)
 # -----------------------
-qp = st.experimental_get_query_params()
+qp = st.query_params()
 selected_event_id = qp.get("event", [None])[0]
 
 if selected_event_id:
