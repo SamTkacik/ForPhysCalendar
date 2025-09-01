@@ -27,57 +27,131 @@ container_text_color_hex = "#9CCB3B"
 # -----------------------
 st.markdown(f"""
 <style>
-/* App background gradient */
+/* ---------------- CSS VARIABLES (tweak these) ---------------- */
+:root {{
+  --banner-top: 16px;          /* space between page top and banner */
+  --banner-height: 72px;       /* banner visual height */
+  --gap: 12px;                 /* general vertical gap */
+  --content-top: calc(var(--banner-top) + var(--banner-height) + var(--gap));
+}}
+
+/* App background */
 .stApp {{
   background: linear-gradient(135deg, #CAD2D8, #7E96A0, #303434);
+  overflow: hidden; /* prevent page-level scroll; we scroll inside columns only */
+}}
+html, body {{
+  height: 100%;
+  overflow: hidden; /* blocks scroll-chaining to the page */
 }}
 .stApp > header {{ background-color: transparent; }}
 
-/* ===== FIXED TITLE BANNER ===== */
-#title-banner {{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background-color: {banner_bg_color_hex};
-    padding: 20px;
-    text-align: center;
-    border-radius: 0 0 10px 10px;
-}}
-#title-banner h1 {{
-    color: {banner_text_color_hex};
-    margin: 0;
-}}
-/* Add spacing so content starts below banner */
+/* Push main content down so it's below the banner (plus a gap) */
 .stApp > main .block-container {{
-    padding-top: 100px;
+  padding-top: var(--content-top);
 }}
 
-/* ===== SCROLLABLE LEFT/RIGHT BOXES ===== */
+/* ---------------- FIXED TITLE BANNER ---------------- */
+#title-banner {{
+  position: fixed;
+  top: var(--banner-top);
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: {banner_bg_color_hex};
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--banner-height);
+  padding: 0 16px;
+}}
+#title-banner h1 {{
+  color: {banner_text_color_hex};
+  margin: 0;
+  line-height: 1;
+}}
+
+/* ---------------- SCROLLABLE LEFT/RIGHT BOXES ----------------
+   Height fills the viewport below the banner.
+   overscroll-behavior avoids scroll-chaining to the page. */
 div.st-key-leftbox, div.st-key-rightbox {{
-    background-color: black;
-    color: #9CCB3B;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    height: calc(100vh - 140px); /* viewport height minus banner */
-    overflow-y: auto;  /* enable scrolling inside */
+  background-color: black;
+  color: #9CCB3B;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  height: calc(100vh - var(--content-top) - var(--gap));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+  box-sizing: border-box;
 }}
 
 /* Checkbox + radio labels */
 .stCheckbox label, .stRadio label {{
-    color: {container_text_color_hex} !important;
-    font-weight: 500 !important;
+  color: {container_text_color_hex} !important;
+  font-weight: 500 !important;
 }}
 
 /* Shared gradient event card */
 .event-card {{
-    background: linear-gradient(135deg, #303434, #466069);
-    color: white;
-    padding: 6px;
-    border-radius: 10px;
-    margin-bottom: 6px;
-    font-weight: 500;
+  background: linear-gradient(135deg, #303434, #466069);
+  color: white;
+  padding: 6px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  font-weight: 500;
+}}
+
+/* ====== (Optional styling kept from your version) ====== */
+
+/* LIST VIEW EXPANDER header/body styling (scoped) */
+#listview-container [data-testid="stExpander"] > div:first-child,
+#listview-container [data-testid="stExpander"] > div > button,
+#listview-container [data-testid="stExpander"] summary,
+#listview-container [data-testid="stExpander"] [data-testid="stExpanderToggle"] {{
+  background: linear-gradient(135deg, #466069, #9CCB3B) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-radius: 10px !important;
+  padding: 8px 12px !important;
+  margin-bottom: 8px !important;
+  border: none !important;
+}}
+#listview-container [data-testid="stExpander"] > div:first-child * {{
+  color: white !important;
+}}
+#listview-container [data-testid="stExpander"] [data-testid="stExpanderContent"],
+#listview-container [data-testid="stExpander"] > div:nth-child(2) {{
+  background: linear-gradient(180deg, rgba(70,96,105,0.15), rgba(156,203,59,0.15)) !important;
+  color: white !important;
+  border-radius: 8px !important;
+  padding: 10px !important;
+}}
+#listview-container h3 {{ color: white !important; }}
+
+/* MONTH SELECT styling, scoped to its container key */
+div.st-key-monthbox [data-baseweb="select"] > div {{
+  background: linear-gradient(135deg, #466069, #9CCB3B) !important;
+  color: white !important;
+  border-radius: 10px !important;
+  font-weight: 500;
+  min-height: 38px !important;
+  line-height: 1.4em !important;
+  padding: 0 10px !important;
+  display: flex;
+  align-items: center;
+}}
+div.st-key-monthbox ul[role="listbox"] {{
+  background: linear-gradient(135deg, #303434, #466069) !important;
+  border-radius: 10px !important;
+}}
+div.st-key-monthbox ul[role="listbox"] li {{
+  color: white !important;
+  font-weight: 500;
+  line-height: 1.4em !important;
+  padding: 6px 10px !important;
 }}
 </style>
 """, unsafe_allow_html=True)
@@ -135,7 +209,6 @@ def render_event_card(e, compact=False):
 # FILTERS + VIEW OPTIONS
 # -----------------------
 col1, col2 = st.columns([1, 3])
-
 with col1:
     with st.container(key="leftbox", border=True):
         st.subheader("Filters")
@@ -189,6 +262,7 @@ with col2:
                             st.markdown(render_event_card(e, compact=True), unsafe_allow_html=True)
                     else:
                         st.write(" ")
+
 
 
 
