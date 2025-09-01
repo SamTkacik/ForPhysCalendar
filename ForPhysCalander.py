@@ -157,78 +157,55 @@ with col2:
         if view_mode == "List View":
             st.subheader("🗓 Events")
 
-            # === Scoped CSS for rightbox: gradient expanders + dropdowns ===
+            # 🔹 Minimal CSS: gradient expanders + white day headers + gradient dropdowns
             st.markdown(
                 """
                 <style>
-                /*
-                Scope everything to the rightbox container so left-side filters remain unchanged.
-                The class name 'st-key-rightbox' matches the key-generated class Streamlit emits
-                for st.container(key="rightbox") in your app. If your DOM differs, see notes below.
-                */
+                /* Day headers only (### Monday...) */
+                div.st-key-rightbox h3 {
+                    color: white !important;
+                }
 
-                /* Expander header (closed state) */
-                div.st-key-rightbox .streamlit-expanderHeader,
-                div.st-key-rightbox .stExpander > button,
+                /* Expander header (event box title) */
                 div.st-key-rightbox div[data-testid="stExpander"] > button {
                     background: linear-gradient(135deg, #466069, #9CCB3B) !important;
-                    color: #FFFFFF !important;
+                    color: white !important;
+                    font-weight: 600 !important;
                     border-radius: 10px !important;
                     padding: 8px 12px !important;
                     margin-bottom: 8px !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: space-between !important;
-                    gap: 8px !important;
                 }
 
-                /* Expander header text */
-                div.st-key-rightbox .streamlit-expanderHeader > div,
-                div.st-key-rightbox .stExpander > button > div {
-                    color: #FFFFFF !important;
-                    font-weight: 600 !important;
-                }
-
-                /* Caret / chevron color in the header */
-                div.st-key-rightbox .stExpander > button svg,
-                div.st-key-rightbox .streamlit-expanderHeader svg {
-                    stroke: #FFFFFF !important;
-                    fill: #FFFFFF !important;
-                }
-
-                /* Expander body (open state) */
-                div.st-key-rightbox .stExpanderContent,
-                div.st-key-rightbox .streamlit-expanderContent,
-                div.st-key-rightbox div[data-testid="stExpander"] .st-expander {
-                    background: linear-gradient(180deg, rgba(70,96,105,0.02), rgba(156,203,59,0.02)) !important;
-                    padding: 10px 12px !important;
+                /* Expander body */
+                div.st-key-rightbox .stExpanderContent {
+                    background: linear-gradient(180deg, rgba(70,96,105,0.1), rgba(156,203,59,0.1)) !important;
+                    color: white !important;
                     border-radius: 8px !important;
-                    color: #FFFFFF !important;
+                    padding: 10px;
                 }
 
-                /* Day headers (e.g. '### Saturday, ...') */
-                div.st-key-rightbox h1, div.st-key-rightbox h2, div.st-key-rightbox h3 {
-                    color: #FFFFFF !important;
-                }
-
-                /* If there are selectboxes inside rightbox, style them too (closed header + dropdown) */
+                /* Selectbox main area (dropdown header) */
                 div.st-key-rightbox div[data-baseweb="select"] > div {
                     background: linear-gradient(135deg, #466069, #9CCB3B) !important;
-                    color: #FFFFFF !important;
-                    border-radius: 8px !important;
+                    color: white !important;
+                    border-radius: 10px !important;
+                    font-weight: 500;
                     min-height: 38px !important;
-                    display: flex !important;
-                    align-items: center !important;
+                    display: flex;
+                    align-items: center;
                     padding: 0 10px !important;
-                    font-weight: 600 !important;
                 }
+
+                /* Dropdown menu list */
                 div.st-key-rightbox ul[role="listbox"] {
                     background: linear-gradient(135deg, #303434, #466069) !important;
-                    border-radius: 8px !important;
+                    border-radius: 10px !important;
                 }
+
+                /* Dropdown items */
                 div.st-key-rightbox ul[role="listbox"] li {
-                    color: #FFFFFF !important;
-                    font-weight: 500 !important;
+                    color: white !important;
+                    font-weight: 500;
                     padding: 6px 10px !important;
                 }
                 </style>
