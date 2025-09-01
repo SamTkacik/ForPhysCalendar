@@ -154,65 +154,39 @@ with col2:
     with st.container(key="rightbox", border=True, height=650):
         if view_mode == "List View":
             st.subheader("🗓 Events")
-            # used to modify labels in list view, not currently working properly
-            st.markdown(
-                """
-                <style>
-                /* Day headers only (### Monday...) */
-                div.st-key-rightbox h3 {
-                    color: white !important;
-                }
-
-                /* Expander header (event title) */
-                div.st-key-rightbox div[data-testid="stExpander"] > button {
-                    background: linear-gradient(135deg, #466069, #9CCB3B) !important;
-                    color: white !important;
-                    font-weight: 600 !important;
-                    border-radius: 10px !important;
-                    padding: 8px 12px !important;
-                    margin-bottom: 8px !important;
-                }
-
-                /* Expander body (opened content) */
-                div.st-key-rightbox .stExpanderContent {
-                    background: linear-gradient(180deg, rgba(70,96,105,0.05), rgba(156,203,59,0.05)) !important;
-                    color: white !important;
-                    border-radius: 8px !important;
-                    padding: 10px;
-                }
-
-                /* Selectbox header (closed) */
-                div[data-baseweb="select"] > div {
-                    background: linear-gradient(135deg, #466069, #9CCB3B) !important;
-                    color: white !important;
-                    font-weight: 500;
-                    border-radius: 10px !important;
-                    min-height: 38px !important;
-                    display: flex !important;
-                    align-items: center;
-                    padding: 0 10px !important;
-                }
-
-                /* Dropdown items (opened) */
-                li[role="option"] {
-                    background: linear-gradient(135deg, #303434, #466069) !important;
-                    color: white !important;
-                    font-weight: 500;
-                    padding: 6px 10px !important;
-                }
-                li[role="option"]:hover {
-                    background-color: rgba(255,255,255,0.08) !important;
-                }
-                </style>
-                """,
-                unsafe_allow_html=True,
-            )
+            # Wrap everything in a custom div
+            st.markdown('<div id="listview-container">', unsafe_allow_html=True)
+            # Inject CSS for gradients
+            st.markdown("""
+            <style>
+            /* Expander header */
+            #listview-container section.stExpander > div > button {
+                background: linear-gradient(135deg, #466069, #9CCB3B) !important;
+                color: white !important;
+                font-weight: 600 !important;
+                border-radius: 10px !important;
+                padding: 8px 12px !important;
+                margin-bottom: 8px !important;
+            }
+            /* Expander body */
+            #listview-container section.stExpander > div ~ div {
+                background: linear-gradient(180deg, rgba(70,96,105,0.05), rgba(156,203,59,0.05)) !important;
+                color: white !important;
+                border-radius: 8px !important;
+                padding: 10px !important;
+            }
+            /* Day headers */
+            #listview-container h3 {
+                color: white !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
             for d in all_dates:
                 day = d.date()
                 events_today = [
                     e for e in st.session_state["events"]
-                    if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types
-                ]
+                    if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types]
                 if events_today:
                     st.markdown(f"### {d.strftime('%A, %B %d, %Y')}")
                     for e in events_today:
