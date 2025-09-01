@@ -246,29 +246,9 @@ with col2:
                             st.write(" ")
 st.markdown("---")
 st.subheader("Request an Event")
-
-st.markdown(
-    """
-    <style>
-    /* Change link color */
-    a {
-        color: #009374 !important;   /* gold/yellow */
-        text-decoration: none;       /* remove underline */
-    }
-
-    a:hover {
-        color: #9CCB3B !important;   /* orange on hover */
-        text-decoration: underline;  /* underline on hover */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-
-
 st.markdown(
     "Fill out this form to request a new event:\n\n"
-    "[Click here to open request form](https://forms.gle/rqTyiU4EXt2mowg6A)"
-)
+    "[Click here to open request form](https://forms.gle/rqTyiU4EXt2mowg6A)")
 
 
 
