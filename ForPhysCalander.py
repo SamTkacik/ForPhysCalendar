@@ -157,7 +157,7 @@ with col2:
         if view_mode == "List View":
             st.subheader("🗓 Events")
 
-            # 🔹 Minimal CSS: gradient expanders + white day headers + gradient dropdowns
+            # 🔹 Minimal CSS for List View
             st.markdown(
                 """
                 <style>
@@ -166,7 +166,7 @@ with col2:
                     color: white !important;
                 }
 
-                /* Expander header (event box title) */
+                /* Expander header (event title) */
                 div.st-key-rightbox div[data-testid="stExpander"] > button {
                     background: linear-gradient(135deg, #466069, #9CCB3B) !important;
                     color: white !important;
@@ -176,37 +176,35 @@ with col2:
                     margin-bottom: 8px !important;
                 }
 
-                /* Expander body */
+                /* Expander body (opened content) */
                 div.st-key-rightbox .stExpanderContent {
-                    background: linear-gradient(180deg, rgba(70,96,105,0.1), rgba(156,203,59,0.1)) !important;
+                    background: linear-gradient(180deg, rgba(70,96,105,0.05), rgba(156,203,59,0.05)) !important;
                     color: white !important;
                     border-radius: 8px !important;
                     padding: 10px;
                 }
 
-                /* Selectbox main area (dropdown header) */
-                div.st-key-rightbox div[data-baseweb="select"] > div {
+                /* Selectbox header (closed) */
+                div[data-baseweb="select"] > div {
                     background: linear-gradient(135deg, #466069, #9CCB3B) !important;
                     color: white !important;
-                    border-radius: 10px !important;
                     font-weight: 500;
+                    border-radius: 10px !important;
                     min-height: 38px !important;
-                    display: flex;
+                    display: flex !important;
                     align-items: center;
                     padding: 0 10px !important;
                 }
 
-                /* Dropdown menu list */
-                div.st-key-rightbox ul[role="listbox"] {
+                /* Dropdown items (opened) */
+                li[role="option"] {
                     background: linear-gradient(135deg, #303434, #466069) !important;
-                    border-radius: 10px !important;
-                }
-
-                /* Dropdown items */
-                div.st-key-rightbox ul[role="listbox"] li {
                     color: white !important;
                     font-weight: 500;
                     padding: 6px 10px !important;
+                }
+                li[role="option"]:hover {
+                    background-color: rgba(255,255,255,0.08) !important;
                 }
                 </style>
                 """,
