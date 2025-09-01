@@ -278,7 +278,7 @@ with st.form("event_request_form"):
     if submitted:
         # Send data to Google Sheets
         import requests
-        sheet_url = "https://script.google.com/macros/s/your-app-script-id/exec"
+        sheet_url = "https://script.google.com/macros/s/AKfycbztJGL--9ZxShbQwPaBMMPzeDdnoESR1HgV4iWend9lyTqDZSbZalsYoEomuLSXv6w-TQ/exec"
         data = {"name": name, "email": email, "message": message}
         r = requests.post(sheet_url, data=data)
 
