@@ -247,6 +247,27 @@ with col2:
 
 st.markdown("---")
 st.subheader("Event Placement Reqests")
+st.markdown("""
+    <style>
+    /* Target text inputs */
+    div[data-testid="stTextInput"] input {
+        background-color: black;
+        color: white;
+        border-radius: 8px;
+        border: 1px solid #444;
+        padding: 6px;
+    }
+
+    /* Target text areas */
+    div[data-testid="stTextArea"] textarea {
+        background-color: black;
+        color: white;
+        border-radius: 8px;
+        border: 1px solid #444;
+        padding: 6px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 with st.form("event_request_form"):
     name = st.text_input("Your name")
