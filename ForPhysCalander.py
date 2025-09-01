@@ -269,28 +269,19 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-with st.form("event_request_form"):
-    name = st.text_input("Your name")
-    email = st.text_input("Your email")
-    message = st.text_area(
-        "Event details (please include organizers, date and time, location, and a brief description)"
-    )
+st.markdown("---")
+st.subheader("Request an Event")
 
-    submitted = st.form_submit_button("Send Request")
-    if submitted:
-        import requests
+google_form_url = "https://forms.gle/dmU8UfxZaBkgE7bU9"
+st.markdown(
+    f"""
+    <iframe src="{google_form_url}" width="700" height="800" frameborder="0" marginheight="0" marginwidth="0">
+    Loading…
+    </iframe>
+    """,
+    unsafe_allow_html=True,
+)
 
-        sheet_url = "https://script.google.com/macros/s/AKfycbwUTVV_DJzWhYTG74FbZrLhfI1AI9Thy4vkz8sqpgLU8Avnq7Et8cDaavA6G0YuQv8VUw/exec"  # <-- paste updated Web App URL here
-        data = {"name": name, "email": email, "message": message}
-
-        try:
-            r = requests.post(sheet_url, json=data)  # send JSON
-            if r.status_code == 200:
-                st.success("✅ Thanks! Your request has been submitted.")
-            else:
-                st.error(f"❌ Error {r.status_code}: Could not send your request.")
-        except Exception as e:
-            st.error(f"⚠️ Request failed: {e}")
 
 
 
