@@ -7,6 +7,12 @@ import calendar
 # MASTER SETTINGS
 # -----------------------
 st.set_page_config(layout="wide")
+# Close modal if URL has ?close=1
+params = st.experimental_get_query_params()
+if params.get("close", ["0"])[0] == "1":
+    st.experimental_set_query_params()          # clear params (optional)
+    st.session_state.pop("selected_event", None)
+
 
 CATEGORY_OPTIONS = ["Department of Physics", "PGSC", "SPS", "GAU", "Other"]
 TYPE_OPTIONS = ['Academic/Professional', 'Recreational', 'Interdisciplinary', 'Other']
@@ -329,7 +335,7 @@ if "selected_event" in st.session_state:
     modal_html = f"""
     <div class="modal-overlay">
         <div class="modal-content">
-            <button class="close-btn" onclick="window.parent.postMessage({{type: 'closeModal'}}, '*')">X</button>
+            <a href="?close=1" class="close-btn">X</a>
             <h2>{e['name']}</h2>
             <p><b>Date:</b> {e['date']}</p>
             <p><b>Time:</b> {e['time']}</p>
