@@ -218,19 +218,19 @@ with col1:
             t for t in TYPE_OPTIONS if st.checkbox(t, value=True, key=f"type_{t}")]
         
 def card_click(event, card_html):
-    """Renders a card with an invisible button on top."""
     key = f"{event['name']}_{event['date']}"
-    # Show the styled card
-    st.markdown(card_html, unsafe_allow_html=True)
-    # Place invisible button overlay
-    clicked = st.button(" ", key=f"btn_{key}")
+    container = st.container()
+    with container:
+        st.markdown(card_html, unsafe_allow_html=True)
+        clicked = st.button(" ", key=f"btn_{key}")
     st.markdown(f"""
         <style>
         div[data-testid="stButton"][key="btn_{key}"] > button {{
-            position: relative;
-            margin-top: -60px;  /* height of card */
-            width: 100%;
-            height: 60px;       /* adjust to your card height */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 90%;   /* cover most of the card */
+            height: 90%;
             opacity: 0;
             cursor: pointer;
         }}
