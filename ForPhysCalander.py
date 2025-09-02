@@ -148,7 +148,11 @@ st.markdown(
 
 
 
-
+def mkevent(date=None, name=None, category=None, type=None, time=None, location=None, description=None):
+    return {'date':date, 'name':name,
+            'category':category, 'type':type,
+            'time':time,'location':location,
+            'description':description}
 
 
 
@@ -177,7 +181,8 @@ if "events" not in st.session_state:
             "time": "2:00-3:15 PM",
             "location": "ISA 2023",
             "description": "USF Physics Alumni Talk-John Kline"
-        }
+        },
+        mkevent(datetime.date(2025, 9, 3),'test','test','test','test','test','test')
     ]
 
 
