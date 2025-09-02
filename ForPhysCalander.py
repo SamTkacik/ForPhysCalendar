@@ -146,13 +146,15 @@ st.markdown(
 
 
 
-
 def mkevent(date, name, category, type, time, location, description):
+    if category not in CATEGORY_OPTIONS:
+        category = 'Other'
+    if type not in TYPE_OPTIONS:
+        type = 'Other'
     return {'date':date, 'name':name,
             'category':category, 'type':type,
             'time':time,'location':location,
             'description':description}
-
 
 
 
@@ -173,7 +175,7 @@ if "events" not in st.session_state:
             "description": "A great way to start the semester with pizza (that's free!), friends, and fun physics trivia!"
         },
         {
-            "date": datetime.date(2025, 9, 4),
+            "date": datetime.date(2025, 9, 3),
             "name": "Colloquium",
             "category": "Department of Physics",
             "type": "Academic/Professional",
