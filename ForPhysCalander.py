@@ -268,15 +268,6 @@ with col2:
                         else:
                             st.write(" ")
 
-if "selected_event" in st.session_state:
-    e = st.session_state["selected_event"]
-    st.markdown("Event Details")
-    st.write(f"**{e['name']}**")
-    st.write(f"🗓 {e['date']}")
-    st.write(f"🕒 {e['time']}")
-    st.write(f"📍 {e['location']}")
-    st.write(e['description'])
-
 st.markdown("---")
 st.subheader("Request an Event")
 st.markdown(
