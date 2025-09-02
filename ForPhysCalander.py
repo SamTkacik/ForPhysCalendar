@@ -317,25 +317,12 @@ if "selected_event" in st.session_state:
         position: relative;
         text-align: left;
     }
-    /* Close button */
-    .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        background: #9CCB3B;
-        border: none;
-        border-radius: 6px;
-        padding: 4px 8px;
-        cursor: pointer;
-        font-weight: bold;
-    }
     </style>
     """
 
     modal_html = f"""
     <div class="modal-overlay">
         <div class="modal-content">
-            <a href="?close=1" class="close-btn">X</a>
             <h2>{e['name']}</h2>
             <p><b>Date:</b> {e['date']}</p>
             <p><b>Time:</b> {e['time']}</p>
@@ -345,7 +332,35 @@ if "selected_event" in st.session_state:
     </div>
     """
 
+    # Render modal
     st.markdown(modal_css + modal_html, unsafe_allow_html=True)
+
+    # Add Streamlit close button (real widget)
+    if st.button("✕", key="modal_close_btn"):
+        st.session_state.pop("selected_event", None)
+        st.rerun()
+
+    # Style close button to float over modal corner
+    st.markdown("""
+    <style>
+    div[data-testid="stButton"][key="modal_close_btn"] {
+        position: fixed;
+        top: calc(50% - 170px);  /* adjust vertical offset */
+        left: calc(50% + 220px); /* adjust horizontal offset */
+        z-index: 10000;
+    }
+    div[data-testid="stButton"][key="modal_close_btn"] > button {
+        background: #9CCB3B;
+        color: black;
+        border: none;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 
 
 if st.session_state.get("selected_event"):
