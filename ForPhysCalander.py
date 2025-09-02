@@ -356,9 +356,7 @@ if "selected_event" in st.session_state:
     </style>
     """, unsafe_allow_html=True)
 
-if st.session_state.get("selected_event"):
-    if st.button("Close Event", key="close_event"):
-        del st.session_state["selected_event"]
+
 
 
 
