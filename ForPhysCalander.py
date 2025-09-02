@@ -173,7 +173,7 @@ if "events" not in st.session_state:
             "description": "A great way to start the semester with pizza (that's free!), friends, and fun physics trivia!"
         },
         {
-            "date": datetime.date(2025, 9, 3),
+            "date": datetime.date(2025, 9, 4),
             "name": "Colloquium",
             "category": "Department of Physics",
             "type": "Academic/Professional",
