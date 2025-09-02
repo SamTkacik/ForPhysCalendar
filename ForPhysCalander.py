@@ -222,21 +222,10 @@ def card_click(event, card_html):
     container = st.container()
     with container:
         st.markdown(card_html, unsafe_allow_html=True)
-        clicked = st.button(" ", key=f"btn_{key}")
-    st.markdown(f"""
-        <style>
-        div[data-testid="stButton"][key="btn_{key}"] > button {{
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 90%;   /* cover most of the card */
-            height: 90%;
-            opacity: 0;
-            cursor: pointer;
-        }}
-        </style>
-        """, unsafe_allow_html=True)
-    return clicked
+        # Instead of invisible overlay, use a small visible button
+        if st.button("View Details", key=f"btn_{key}"):
+            st.session_state["selected_event"] = event
+
 
 # -------------------
 # RIGHT COLUMN
@@ -292,6 +281,69 @@ st.markdown("---")
 st.subheader("Request an Event")
 st.markdown(
     "[Click here to open request form](https://forms.gle/rqTyiU4EXt2mowg6A)")
+
+# =====================
+# MODAL POPUP OVERLAY
+# =====================
+if "selected_event" in st.session_state:
+    e = st.session_state["selected_event"]
+
+    modal_css = """
+    <style>
+    /* Fullscreen dark overlay */
+    .modal-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+    /* Modal box */
+    .modal-content {
+        background: linear-gradient(135deg, #303434, #466069);
+        padding: 20px;
+        border-radius: 12px;
+        max-width: 500px;
+        color: white;
+        position: relative;
+        text-align: left;
+    }
+    /* Close button */
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: #9CCB3B;
+        border: none;
+        border-radius: 6px;
+        padding: 4px 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    </style>
+    """
+
+    modal_html = f"""
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="window.parent.postMessage({{type: 'closeModal'}}, '*')">X</button>
+            <h2>{e['name']}</h2>
+            <p><b>Date:</b> {e['date']}</p>
+            <p><b>Time:</b> {e['time']}</p>
+            <p><b>Location:</b> {e['location']}</p>
+            <p><b>Description:</b> {e['description']}</p>
+        </div>
+    </div>
+    """
+    st.markdown(modal_css + modal_html, unsafe_allow_html=True)
+
+if st.session_state.get("selected_event"):
+    if st.button("Close Event", key="close_event"):
+        del st.session_state["selected_event"]
+
 
 
 
