@@ -299,7 +299,7 @@ if "selected_event" in st.session_state:
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 9999;
+        z-index: 9998; /* slightly below the close button */
     }
     /* Modal box */
     .modal-content {
@@ -329,19 +329,20 @@ if "selected_event" in st.session_state:
     # Render modal
     st.markdown(modal_css + modal_html, unsafe_allow_html=True)
 
-    # Add Streamlit close button (real widget)
+    # Streamlit close button (floats above everything)
     if st.button("✕", key="modal_close_btn"):
         st.session_state.pop("selected_event", None)
         st.rerun()
 
-    # Style close button to float over modal corner
+    # Style the button to appear top-right of the modal box
     st.markdown("""
     <style>
     div[data-testid="stButton"][key="modal_close_btn"] {
         position: fixed;
-        top: calc(50% - 170px);  /* adjust vertical offset */
-        left: calc(50% + 220px); /* adjust horizontal offset */
-        z-index: 10000;
+        top: 50%;              /* vertical center of screen */
+        left: 50%;             /* horizontal center */
+        transform: translate(220px, -170px); /* offset relative to modal */
+        z-index: 10000;        /* above overlay */
     }
     div[data-testid="stButton"][key="modal_close_btn"] > button {
         background: #9CCB3B;
@@ -354,8 +355,6 @@ if "selected_event" in st.session_state:
     }
     </style>
     """, unsafe_allow_html=True)
-
-
 
 if st.session_state.get("selected_event"):
     if st.button("Close Event", key="close_event"):
