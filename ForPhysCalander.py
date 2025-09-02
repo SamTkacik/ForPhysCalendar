@@ -288,7 +288,6 @@ st.markdown(
 if st.session_state.get("selected_event"):
     e = st.session_state["selected_event"]
 
-    # CSS to turn Streamlit containers into a true overlay + modal box
     st.markdown("""
     <style>
       /* Fullscreen dark overlay */
@@ -311,7 +310,7 @@ if st.session_state.get("selected_event"):
         position: relative !important;
         box-shadow: 0 8px 28px rgba(0,0,0,0.45) !important;
       }
-      /* Position the Streamlit close button in the modal corner */
+      /* Close button in corner */
       div[data-testid="stButton"][key="modal_close"] {
         position: absolute !important;
         top: 10px !important;
@@ -330,20 +329,18 @@ if st.session_state.get("selected_event"):
     </style>
     """, unsafe_allow_html=True)
 
-    # Build the modal using Streamlit containers so buttons work
     with st.container(key="modal_overlay"):
         with st.container(key="modal_box"):
-            # Real Streamlit button -> can clear session_state
             if st.button("✕", key="modal_close"):
                 st.session_state.pop("selected_event", None)
                 st.rerun()
 
-            # Modal content
             st.markdown(f"### {e['name']}")
             st.write(f"**Date:** {e['date']}")
             st.write(f"**Time:** {e['time']}")
             st.write(f"**Location:** {e['location']}")
             st.write(e['description'])
+
 
 
 
