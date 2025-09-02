@@ -147,8 +147,7 @@ st.markdown(
 
 
 
-
-def mkevent(date=None, name=None, category=None, type=None, time=None, location=None, description=None):
+def mkevent(date, name, category, type, time, location, description):
     return {'date':date, 'name':name,
             'category':category, 'type':type,
             'time':time,'location':location,
