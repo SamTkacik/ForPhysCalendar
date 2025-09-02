@@ -285,76 +285,66 @@ st.markdown(
 # =====================
 # MODAL POPUP OVERLAY
 # =====================
-if "selected_event" in st.session_state:
+if st.session_state.get("selected_event"):
     e = st.session_state["selected_event"]
 
-    modal_css = """
-    <style>
-    /* Fullscreen dark overlay */
-    .modal-overlay {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0,0,0,0.7);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9998; /* slightly below the close button */
-    }
-    /* Modal box */
-    .modal-content {
-        background: linear-gradient(135deg, #303434, #466069);
-        padding: 20px;
-        border-radius: 12px;
-        max-width: 500px;
-        color: white;
-        position: relative;
-        text-align: left;
-    }
-    </style>
-    """
-
-    modal_html = f"""
-    <div class="modal-overlay">
-        <div class="modal-content">
-            <h2>{e['name']}</h2>
-            <p><b>Date:</b> {e['date']}</p>
-            <p><b>Time:</b> {e['time']}</p>
-            <p><b>Location:</b> {e['location']}</p>
-            <p><b>Description:</b> {e['description']}</p>
-        </div>
-    </div>
-    """
-
-    # Render modal
-    st.markdown(modal_css + modal_html, unsafe_allow_html=True)
-
-    # Streamlit close button (floats above everything)
-    if st.button("✕", key="modal_close_btn"):
-        st.session_state.pop("selected_event", None)
-        st.rerun()
-
-    # Style the button to appear top-right of the modal box
+    # CSS to turn Streamlit containers into a true overlay + modal box
     st.markdown("""
     <style>
-    div[data-testid="stButton"][key="modal_close_btn"] {
-        position: fixed;
-        top: 50%;              /* vertical center of screen */
-        left: 50%;             /* horizontal center */
-        transform: translate(220px, -170px); /* offset relative to modal */
-        z-index: 10000;        /* above overlay */
-    }
-    div[data-testid="stButton"][key="modal_close_btn"] > button {
-        background: #9CCB3B;
-        color: black;
-        border: none;
-        border-radius: 6px;
-        padding: 4px 10px;
-        font-weight: 700;
-        cursor: pointer;
-    }
+      /* Fullscreen dark overlay */
+      [data-testid="stContainer"][key="modal_overlay"] {
+        position: fixed !important;
+        inset: 0 !important;
+        background: rgba(0,0,0,0.7) !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        z-index: 9999 !important;
+      }
+      /* Modal box */
+      [data-testid="stContainer"][key="modal_box"] {
+        background: linear-gradient(135deg, #303434, #466069) !important;
+        color: white !important;
+        padding: 20px 24px !important;
+        border-radius: 12px !important;
+        width: min(520px, 92vw) !important;
+        position: relative !important;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.45) !important;
+      }
+      /* Position the Streamlit close button in the modal corner */
+      div[data-testid="stButton"][key="modal_close"] {
+        position: absolute !important;
+        top: 10px !important;
+        right: 12px !important;
+        z-index: 10000 !important;
+      }
+      div[data-testid="stButton"][key="modal_close"] > button {
+        background: #9CCB3B !important;
+        color: black !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 2px 10px !important;
+        font-weight: 700 !important;
+        cursor: pointer !important;
+      }
     </style>
     """, unsafe_allow_html=True)
+
+    # Build the modal using Streamlit containers so buttons work
+    with st.container(key="modal_overlay"):
+        with st.container(key="modal_box"):
+            # Real Streamlit button -> can clear session_state
+            if st.button("✕", key="modal_close"):
+                st.session_state.pop("selected_event", None)
+                st.rerun()
+
+            # Modal content
+            st.markdown(f"### {e['name']}")
+            st.write(f"**Date:** {e['date']}")
+            st.write(f"**Time:** {e['time']}")
+            st.write(f"**Location:** {e['location']}")
+            st.write(e['description'])
+
 
 
 
