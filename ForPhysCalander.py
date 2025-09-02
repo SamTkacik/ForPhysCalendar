@@ -141,12 +141,14 @@ st.markdown(
     """,
     unsafe_allow_html=True)
 
-
-
-
-
-
+#########################################################################################################################################
+############## For updating events on site ###########################################################################################################################
+#########################################################################################################################################
 def mkevent(date, name, category, type, time, location, description):
+    info = [date, name, time, location, description]
+    for i in info:
+        if i is None:
+            i = 'N/A'
     if category not in CATEGORY_OPTIONS:
         category = 'Other'
     if type not in TYPE_OPTIONS:
@@ -155,51 +157,24 @@ def mkevent(date, name, category, type, time, location, description):
             'category':category, 'type':type,
             'time':time,'location':location,
             'description':description}
+def dt(year, month, day):
+    return datetime.date(year, month, day)
 
-
-
-
-
-# -----------------------
-# SESSION STATE EVENTS
-# -----------------------
 if "events" not in st.session_state:
     st.session_state["events"] = [
-        {
-            "date": datetime.date(2025, 9, 5),
-            "name": "Welcome Party",
-            "category": "PGSC",
-            "type": "Recreational",
-            "time": "2:30-5:30 PM",
-            "location": "ISA 5010",
-            "description": "A great way to start the semester with pizza (that's free!), friends, and fun physics trivia!"
-        },
-        {
-            "date": datetime.date(2025, 9, 3),
-            "name": "Colloquium",
-            "category": "Department of Physics",
-            "type": "Academic/Professional",
-            "time": "2:00-3:15 PM",
-            "location": "ISA 2023",
-            "description": "USF Physics Alumni Talk-John Kline"
-        },
-        mkevent(datetime.date(2025, 9, 4),'test','test','test','test','test','test')
+        mkevent(dt(2025, 9, 5),'Welcome Party',
+                'PGSC','Recreational',
+                '2:30-5:30 PM','ISA 5010',
+                "A great way to start the semester with pizza (that's free!), friends, and \
+                        fun physics trivia!"),
+        mkevent(dt(2025, 9, 3),'Colloquium',
+                'Department of Physics', 'Academic/Professional',
+                '2:00-3:15 PM', 'ISA 2023',
+                'USF Physics Alumni Talk-John Kline')
     ]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#########################################################################################################################################
+#########################################################################################################################################
+#########################################################################################################################################
 
 # -----------------------
 # HELPER: Render Event Card
@@ -241,27 +216,41 @@ with col1:
         select_all_types = st.checkbox("Select/Deselect All Event Types", value=True)
         selected_types = TYPE_OPTIONS if select_all_types else [
             t for t in TYPE_OPTIONS if st.checkbox(t, value=True, key=f"type_{t}")]
+        
+def card_click(event, card_html):
+    """Renders a card with an invisible button on top."""
+    key = f"{event['name']}_{event['date']}"
+    # Show the styled card
+    st.markdown(card_html, unsafe_allow_html=True)
+    # Place invisible button overlay
+    clicked = st.button(" ", key=f"btn_{key}")
+    st.markdown(f"""
+        <style>
+        div[data-testid="stButton"][key="btn_{key}"] > button {{
+            position: relative;
+            margin-top: -60px;  /* height of card */
+            width: 100%;
+            height: 60px;       /* adjust to your card height */
+            opacity: 0;
+            cursor: pointer;
+        }}
+        </style>
+        """, unsafe_allow_html=True)
+    return clicked
 
 # -------------------
 # RIGHT COLUMN
 # -------------------
 with col2:
-    # removed fixed height=650 so CSS min-height can stretch to viewport
     with st.container(key="rightbox", border=True):
-            # -------------------
-            # GRID VIEW
-            # -------------------
             st.subheader("📆 Events")
 
             months = sorted(set((d.year, d.month) for d in all_dates))
             # Scope the selectbox in a keyed container so CSS only affects this widget
             with st.container(key="monthbox"):
-                chosen_month = st.selectbox(
-                    "Select Month",
-                    [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months]
-                )
-            chosen_year, chosen_month_num = [
-                (y, m) for (y, m) in months
+                chosen_month = st.selectbox("Select Month",
+                    [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months])
+            chosen_year, chosen_month_num = [(y, m) for (y, m) in months
                 if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month][0]
 
             cal = calendar.Calendar(firstweekday=6)  # Sunday start
@@ -281,13 +270,24 @@ with col2:
                     with cols[i]:
                         if start_date <= day <= end_date:
                             st.markdown(f"### {day.day}")
-                            todays_events = [
-                                e for e in st.session_state["events"]
+                            todays_events = [e for e in st.session_state["events"]
                                 if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types]
                             for e in todays_events:
-                                st.markdown(render_event_card(e, compact=True), unsafe_allow_html=True)
+                                #st.markdown(render_event_card(e, compact=True), unsafe_allow_html=True)
+                                if card_click(e, render_event_card(e, compact=True)):
+                                    st.session_state["selected_event"] = e
                         else:
                             st.write(" ")
+
+if "selected_event" in st.session_state:
+    e = st.session_state["selected_event"]
+    st.markdown("Event Details")
+    st.write(f"**{e['name']}**")
+    st.write(f"🗓 {e['date']}")
+    st.write(f"🕒 {e['time']}")
+    st.write(f"📍 {e['location']}")
+    st.write(e['description'])
+
 st.markdown("---")
 st.subheader("Request an Event")
 st.markdown(
