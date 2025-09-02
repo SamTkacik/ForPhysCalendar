@@ -282,43 +282,63 @@ if st.session_state.get("selected_event"):
     st.markdown("""
     <style>
       /* Fullscreen dark overlay */
-      [data-testid="stContainer"][key="modal_overlay"] {
-        position: fixed !important;
-        inset: 0 !important;
-        background: rgba(0,0,0,0.7) !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        z-index: 9999 !important;
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
       }
       /* Modal box */
-      [data-testid="stContainer"][key="modal_box"] {
-        background: linear-gradient(135deg, #303434, #466069) !important;
-        color: white !important;
-        padding: 20px 24px !important;
-        border-radius: 12px !important;
-        width: min(520px, 92vw) !important;
-        position: relative !important;
-        box-shadow: 0 8px 28px rgba(0,0,0,0.45) !important;
+      .modal-box {
+        background: linear-gradient(135deg, #303434, #466069);
+        color: white;
+        padding: 20px 24px;
+        border-radius: 12px;
+        width: min(520px, 92vw);
+        position: relative;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.45);
       }
-      /* Close button in corner */
-      div[data-testid="stButton"][key="modal_close"] {
-        position: absolute !important;
-        top: 10px !important;
-        right: 12px !important;
-        z-index: 10000 !important;
-      }
-      div[data-testid="stButton"][key="modal_close"] > button {
-        background: #9CCB3B !important;
-        color: black !important;
-        border: none !important;
-        border-radius: 8px !important;
-        padding: 2px 10px !important;
-        font-weight: 700 !important;
-        cursor: pointer !important;
+      /* Close button */
+      .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        background: #9CCB3B;
+        color: black;
+        border: none;
+        border-radius: 8px;
+        padding: 2px 10px;
+        font-weight: 700;
+        cursor: pointer;
       }
     </style>
     """, unsafe_allow_html=True)
+
+    # Render modal using raw HTML for overlay
+    st.markdown(f"""
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <form action="" method="get">
+          <button class="modal-close" name="close_event" type="submit">✕</button>
+        </form>
+        <h3>{e['name']}</h3>
+        <p><b>Date:</b> {e['date']}</p>
+        <p><b>Time:</b> {e['time']}</p>
+        <p><b>Location:</b> {e['location']}</p>
+        <p>{e['description']}</p>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Handle close event
+    if "close_event" in st.query_params:
+        st.session_state.pop("selected_event", None)
+        st.query_params.clear()
+        st.rerun()
+
 
     with st.container(key="modal_overlay"):
         with st.container(key="modal_box"):
