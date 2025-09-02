@@ -7,12 +7,6 @@ import calendar
 # MASTER SETTINGS
 # -----------------------
 st.set_page_config(layout="wide")
-# Close modal if URL has ?close=1
-params = st.experimental_get_query_params()
-if params.get("close", ["0"])[0] == "1":
-    st.experimental_set_query_params()          # clear params (optional)
-    st.session_state.pop("selected_event", None)
-
 
 CATEGORY_OPTIONS = ["Department of Physics", "PGSC", "SPS", "GAU", "Other"]
 TYPE_OPTIONS = ['Academic/Professional', 'Recreational', 'Interdisciplinary', 'Other']
