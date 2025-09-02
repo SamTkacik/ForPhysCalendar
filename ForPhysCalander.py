@@ -285,11 +285,15 @@ st.markdown(
 # =====================
 # MODAL POPUP OVERLAY
 # =====================
+# =====================
+# MODAL POPUP OVERLAY
+# =====================
 if "selected_event" in st.session_state:
     e = st.session_state["selected_event"]
 
     modal_css = """
     <style>
+    /* Fullscreen dark overlay */
     .modal-overlay {
         position: fixed;
         top: 0; left: 0;
@@ -300,6 +304,7 @@ if "selected_event" in st.session_state:
         align-items: center;
         z-index: 9999;
     }
+    /* Modal box */
     .modal-content {
         background: linear-gradient(135deg, #303434, #466069);
         padding: 20px;
@@ -309,24 +314,36 @@ if "selected_event" in st.session_state:
         position: relative;
         text-align: left;
     }
+    /* Close button */
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: #9CCB3B;
+        border: none;
+        border-radius: 6px;
+        padding: 4px 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
     </style>
     """
 
-    st.markdown(modal_css, unsafe_allow_html=True)
+    modal_html = f"""
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="window.parent.postMessage({{type: 'closeModal'}}, '*')">X</button>
+            <h2>{e['name']}</h2>
+            <p><b>Date:</b> {e['date']}</p>
+            <p><b>Time:</b> {e['time']}</p>
+            <p><b>Location:</b> {e['location']}</p>
+            <p><b>Description:</b> {e['description']}</p>
+        </div>
+    </div>
+    """
 
-    with st.container():
-        st.markdown('<div class="modal-overlay"><div class="modal-content">', unsafe_allow_html=True)
+    st.markdown(modal_css + modal_html, unsafe_allow_html=True)
 
-        st.markdown(f"### {e['name']}")
-        st.write(f"**Date:** {e['date']}")
-        st.write(f"**Time:** {e['time']}")
-        st.write(f"**Location:** {e['location']}")
-        st.write(e['description'])
-
-        if st.button("❌ Close", key="close_modal"):
-            del st.session_state["selected_event"]
-
-        st.markdown('</div></div>', unsafe_allow_html=True)
 
 if st.session_state.get("selected_event"):
     if st.button("Close Event", key="close_event"):
