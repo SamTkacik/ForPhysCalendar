@@ -317,13 +317,11 @@ if st.session_state.get("selected_event"):
     </style>
     """, unsafe_allow_html=True)
 
-    # Render modal using raw HTML for overlay
+    # Modal HTML with close button using a Streamlit button
     st.markdown(f"""
     <div class="modal-overlay">
       <div class="modal-box">
-        <form action="" method="get">
-          <button class="modal-close" name="close_event" type="submit">✕</button>
-        </form>
+        <button class="modal-close" onclick="window.parent.postMessage({{type: 'closeModal'}}, '*')">✕</button>
         <h3>{e['name']}</h3>
         <p><b>Date:</b> {e['date']}</p>
         <p><b>Time:</b> {e['time']}</p>
@@ -333,11 +331,27 @@ if st.session_state.get("selected_event"):
     </div>
     """, unsafe_allow_html=True)
 
-    # Handle close event
-    if "close_event" in st.query_params:
+    # Small JS snippet to clear modal without a full rerun
+    st.markdown("""
+    <script>
+    window.addEventListener('message', (event) => {
+      if (event.data.type === 'closeModal') {
+        const streamlitEvent = new Event("streamlit:closeModal");
+        window.dispatchEvent(streamlitEvent);
+      }
+    });
+    </script>
+    """, unsafe_allow_html=True)
+
+    # Listen for the event and clear session state
+    import streamlit as st_js_event  # avoid name clash
+    if st_js_event.session_state.get("_closeModal_triggered"):
         st.session_state.pop("selected_event", None)
-        st.query_params.clear()
-        st.rerun()
+        st.session_state["_closeModal_triggered"] = False
+    else:
+        # Register the custom event listener only once
+        st_js_event.session_state["_closeModal_triggered"] = False
+
 
 
     with st.container(key="modal_overlay"):
