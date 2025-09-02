@@ -182,7 +182,7 @@ if "events" not in st.session_state:
             "location": "ISA 2023",
             "description": "USF Physics Alumni Talk-John Kline"
         },
-        mkevent(datetime.date(2025, 9, 3),'test','test','test','test','test','test')
+        mkevent(datetime.date(2025, 9, 4),'test','test','test','test','test','test')
     ]
 
 
