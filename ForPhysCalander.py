@@ -211,10 +211,19 @@ with col1:
 # -------------------
 # CARD CLICK HANDLER
 # -------------------
-def card_click(event, card_html):
-    key = f"{event['name']}_{event['date']}"
-    st.markdown(card_html, unsafe_allow_html=True)
-    return st.button("View Details", key=f"btn_{key}")
+for e in todays_events:
+    if card_click(e, render_event_card(e, compact=True)):
+        st.session_state["selected_event"] = e
+        # Render modal immediately on same click
+        with st.container():
+            st.markdown("---")
+            st.subheader("Event Details")
+            st.write(f"### {e['name']}")
+            st.write(f"**Date:** {e['date']}")
+            st.write(f"**Time:** {e['time']}")
+            st.write(f"**Location:** {e['location']}")
+            st.write(e["description"])
+
 
 # -------------------
 # RIGHT COLUMN
