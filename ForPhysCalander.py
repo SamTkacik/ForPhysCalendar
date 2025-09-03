@@ -63,6 +63,7 @@ div.st-key-leftbox, div.st-key-rightbox {{
     font-weight: 500;
 }}
 /* ====== LIST VIEW EXPANDER: robust header + body styling ====== */
+/* Header clickable area – match several Streamlit variants */
 #listview-container [data-testid="stExpander"] > div:first-child,
 #listview-container [data-testid="stExpander"] > div > button,
 #listview-container [data-testid="stExpander"] summary,
@@ -75,9 +76,11 @@ div.st-key-leftbox, div.st-key-rightbox {{
     margin-bottom: 8px !important;
     border: none !important;
 }}
+/* Ensure header text/icons inside the header are white */
 #listview-container [data-testid="stExpander"] > div:first-child * {{
     color: white !important;
 }}
+/* Body/content area (expander content) – match variants */
 #listview-container [data-testid="stExpander"] [data-testid="stExpanderContent"],
 #listview-container [data-testid="stExpander"] > div:nth-child(2) {{
     background: linear-gradient(180deg, rgba(70,96,105,0.15), rgba(156,203,59,0.15)) !important;
@@ -85,9 +88,11 @@ div.st-key-leftbox, div.st-key-rightbox {{
     border-radius: 8px !important;
     padding: 10px !important;
 }}
+/* Day headers in list view */
 #listview-container h3 {{
     color: white !important;
 }}
+/* ====== MONTH SELECT: restore gradient styling, scoped to container key ====== */
 div.st-key-monthbox [data-baseweb="select"] > div {{
     background: linear-gradient(135deg, #466069, #9CCB3B) !important;
     color: white !important;
@@ -167,6 +172,9 @@ if "events" not in st.session_state:
                 '2:00-3:15 PM', 'ISA 2023',
                 'USF Physics Alumni Talk-John Kline')
     ]
+#########################################################################################################################################
+#########################################################################################################################################
+#########################################################################################################################################
 
 # -----------------------
 # HELPER: Render Event Card
@@ -195,6 +203,7 @@ def render_event_card(e, compact=False):
 # -----------------------
 col1, col2 = st.columns([1, 3])
 with col1:
+    # removed fixed height=650 so CSS min-height can stretch to viewport
     with st.container(key="leftbox", border=True):
         st.subheader("Filters")
         # Org filters
@@ -207,22 +216,15 @@ with col1:
         select_all_types = st.checkbox("Select/Deselect All Event Types", value=True)
         selected_types = TYPE_OPTIONS if select_all_types else [
             t for t in TYPE_OPTIONS if st.checkbox(t, value=True, key=f"type_{t}")]
-
-# -------------------
-# CARD CLICK HANDLER
-# -------------------
-for e in todays_events:
-    if card_click(e, render_event_card(e, compact=True)):
-        st.session_state["selected_event"] = e
-        # Render modal immediately on same click
-        with st.container():
-            st.markdown("---")
-            st.subheader("Event Details")
-            st.write(f"### {e['name']}")
-            st.write(f"**Date:** {e['date']}")
-            st.write(f"**Time:** {e['time']}")
-            st.write(f"**Location:** {e['location']}")
-            st.write(e["description"])
+        
+def card_click(event, card_html):
+    key = f"{event['name']}_{event['date']}"
+    container = st.container()
+    with container:
+        st.markdown(card_html, unsafe_allow_html=True)
+        # Instead of invisible overlay, use a small visible button
+        if st.button("View Details", key=f"btn_{key}"):
+            st.session_state["selected_event"] = event
 
 
 # -------------------
@@ -230,39 +232,41 @@ for e in todays_events:
 # -------------------
 with col2:
     with st.container(key="rightbox", border=True):
-        st.subheader("📆 Events")
+            st.subheader("📆 Events")
 
-        months = sorted(set((d.year, d.month) for d in all_dates))
-        with st.container(key="monthbox"):
-            chosen_month = st.selectbox("Select Month",
-                [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months])
-        chosen_year, chosen_month_num = [(y, m) for (y, m) in months
-            if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month][0]
+            months = sorted(set((d.year, d.month) for d in all_dates))
+            # Scope the selectbox in a keyed container so CSS only affects this widget
+            with st.container(key="monthbox"):
+                chosen_month = st.selectbox("Select Month",
+                    [datetime.date(y, m, 1).strftime("%B %Y") for y, m in months])
+            chosen_year, chosen_month_num = [(y, m) for (y, m) in months
+                if datetime.date(y, m, 1).strftime("%B %Y") == chosen_month][0]
 
-        cal = calendar.Calendar(firstweekday=6)  # Sunday start
-        month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
+            cal = calendar.Calendar(firstweekday=6)  # Sunday start
+            month_days = cal.monthdatescalendar(chosen_year, chosen_month_num)
 
-        weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-        cols = st.columns(7, gap="medium")
-        for i, d in enumerate(weekdays):
-            with cols[i]:
-                st.markdown(f"**{d}**")
-        st.write("---" * 15)
-
-        for week in month_days:
+            weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+            # Header row using same column structure
             cols = st.columns(7, gap="medium")
-            for i, day in enumerate(week):
+            for i, d in enumerate(weekdays):
                 with cols[i]:
-                    if start_date <= day <= end_date:
-                        st.markdown(f"### {day.day}")
-                        todays_events = [e for e in st.session_state["events"]
-                            if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types]
-                        for e in todays_events:
-                            if card_click(e, render_event_card(e, compact=True)):
-                                st.session_state["selected_event"] = e
-                                st.rerun()  # show modal immediately
-                    else:
-                        st.write(" ")
+                    st.markdown(f"**{d}**")  # bold weekday name
+            st.write("---" * 15)  # optional separator
+
+            for week in month_days:
+                cols = st.columns(7, gap="medium")
+                for i, day in enumerate(week):
+                    with cols[i]:
+                        if start_date <= day <= end_date:
+                            st.markdown(f"### {day.day}")
+                            todays_events = [e for e in st.session_state["events"]
+                                if e["date"] == day and e["category"] in selected_categories and e["type"] in selected_types]
+                            for e in todays_events:
+                                #st.markdown(render_event_card(e, compact=True), unsafe_allow_html=True)
+                                if card_click(e, render_event_card(e, compact=True)):
+                                    st.session_state["selected_event"] = e
+                        else:
+                            st.write(" ")
 
 st.markdown("---")
 st.subheader("Request an Event")
@@ -276,6 +280,7 @@ if st.session_state.get("selected_event"):
     e = st.session_state["selected_event"]
     st.markdown("""
     <style>
+      /* Fullscreen dark overlay */
       .modal-overlay {
         position: fixed;
         inset: 0;
@@ -285,6 +290,7 @@ if st.session_state.get("selected_event"):
         align-items: center;
         z-index: 9999;
       }
+      /* Modal box */
       .modal-box {
         background: linear-gradient(135deg, #303434, #466069);
         color: white;
@@ -295,22 +301,24 @@ if st.session_state.get("selected_event"):
         box-shadow: 0 8px 28px rgba(0,0,0,0.45);
       }
     .modal-box h3 {
-    font-size: 28px;
-    font-weight: 700;
-    color: #9CCB3B;
-    margin-bottom: 12px;
+    font-size: 28px;     /* bigger title */
+    font-weight: 700;    /* bold */
+    color: #9CCB3B;      /* green accent */
+    margin-bottom: 12px; /* spacing below title */
     text-align: center; 
     }
     .modal-box p {
-    font-size: 16px;
-    line-height: 1.5;
-    color: #f0f0f0;
-    margin: 6px 0;
+    font-size: 16px;     /* normal text */
+    line-height: 1.5;    /* more readable spacing */
+    color: #f0f0f0;      /* light gray text */
+    margin: 6px 0;       /* consistent spacing */
     }
     .modal-box b {
-    color: white;
+    color: white;      /* highlight labels like Date, Time */
     text-align: center; 
     }
+                
+      /* Close button */
       .modal-close {
         position: absolute;
         top: 10px;
@@ -332,16 +340,25 @@ if st.session_state.get("selected_event"):
       <form action="" method="get">
         <button class="modal-close" name="close_event" type="submit">✕</button>
       </form>
+    
+      <!-- Event title -->
       <h2 class="modal-title">{e['name']}</h2>
+    
+      <!-- Category -->
       <p class="modal-category">{e['category']}</p>
+    
+      <!-- Date, Time, Location -->
       <p class="modal-meta">
         <b>{e['date']}</b> • {e['time']} • {e['location']}
       </p>
+    
+      <!-- Description -->
       <p class="modal-description">{e['description']}</p>
     </div>
     </div>
     """, unsafe_allow_html=True)
 
+    # Handle close event
     if "close_event" in st.query_params:
         st.session_state.pop("selected_event", None)
         st.query_params.clear()
