@@ -278,7 +278,6 @@ st.markdown(
 # =====================
 if st.session_state.get("selected_event"):
     e = st.session_state["selected_event"]
-
     st.markdown("""
     <style>
       /* Fullscreen dark overlay */
@@ -297,10 +296,26 @@ if st.session_state.get("selected_event"):
         color: white;
         padding: 20px 24px;
         border-radius: 12px;
-        width: min(520px, 92vw);
+        width: min(800px, 92vw);
         position: relative;
         box-shadow: 0 8px 28px rgba(0,0,0,0.45);
       }
+    .modal-box h3 {
+    font-size: 28px;     /* bigger title */
+    font-weight: 700;    /* bold */
+    color: #9CCB3B;      /* green accent */
+    margin-bottom: 12px; /* spacing below title */
+    }
+    .modal-box p {
+    font-size: 16px;     /* normal text */
+    line-height: 1.5;    /* more readable spacing */
+    color: #f0f0f0;      /* light gray text */
+    margin: 6px 0;       /* consistent spacing */
+    }
+    .modal-box b {
+    color: #FFD700;      /* highlight labels like Date, Time */
+    }
+                
       /* Close button */
       .modal-close {
         position: absolute;
@@ -317,19 +332,34 @@ if st.session_state.get("selected_event"):
     </style>
     """, unsafe_allow_html=True)
 
-    # Render modal using raw HTML for overlay
     st.markdown(f"""
     <div class="modal-overlay">
-      <div class="modal-box">
+    <div class="modal-box">
         <form action="" method="get">
-          <button class="modal-close" name="close_event" type="submit">✕</button>
+        <button class="modal-close" name="close_event" type="submit">✕</button>
         </form>
-        <h3>{e['name']}</h3>
-        <p><b>Date:</b> {e['date']}</p>
-        <p><b>Time:</b> {e['time']}</p>
-        <p><b>Location:</b> {e['location']}</p>
-        <p>{e['description']}</p>
-      </div>
+
+        <!-- Event title -->
+        <h2 style="text-align:center; margin-bottom:8px; color:#9CCB3B;">
+        {e['name']}
+        </h2>
+
+        <!-- Category -->
+        <p style="text-align:center; font-size:16px; color:#FFD700; margin-top:0; margin-bottom:16px;">
+        {e['category']}
+        </p>
+
+        <!-- Date, Time, Location in one line -->
+        <p style="text-align:center; font-size:15px; color:#f0f0f0; margin-bottom:20px;">
+        <b>{e['date']}</b> • {e['time']} • {e['location']}
+        </p>
+
+        <!-- Description -->
+        <p style="font-size:18px; line-height:1.6; color:#FFFFFF; text-align:justify;">
+        {e['description']}
+        </p>
+
+    </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -338,21 +368,6 @@ if st.session_state.get("selected_event"):
         st.session_state.pop("selected_event", None)
         st.query_params.clear()
         st.rerun()
-
-
-
-
-    with st.container(key="modal_overlay"):
-        with st.container(key="modal_box"):
-            if st.button("✕", key="modal_close"):
-                st.session_state.pop("selected_event", None)
-                st.rerun()
-
-            st.markdown(f"### {e['name']}")
-            st.write(f"**Date:** {e['date']}")
-            st.write(f"**Time:** {e['time']}")
-            st.write(f"**Location:** {e['location']}")
-            st.write(e['description'])
 
 
 
