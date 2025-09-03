@@ -335,30 +335,23 @@ if st.session_state.get("selected_event"):
     st.markdown(f"""
     <div class="modal-overlay">
     <div class="modal-box">
-        <form action="" method="get">
+      <form action="" method="get">
         <button class="modal-close" name="close_event" type="submit">✕</button>
-        </form>
-
-        <!-- Event title -->
-        <h2 style="text-align:center; margin-bottom:8px; color:#9CCB3B;">
-        {e['name']}
-        </h2>
-
-        <!-- Category -->
-        <p style="text-align:center; font-size:16px; color:#FFD700; margin-top:0; margin-bottom:16px;">
-        {e['category']}
-        </p>
-
-        <!-- Date, Time, Location in one line -->
-        <p style="text-align:center; font-size:15px; color:#f0f0f0; margin-bottom:20px;">
+      </form>
+    
+      <!-- Event title -->
+      <h2 class="modal-title">{e['name']}</h2>
+    
+      <!-- Category -->
+      <p class="modal-category">{e['category']}</p>
+    
+      <!-- Date, Time, Location -->
+      <p class="modal-meta">
         <b>{e['date']}</b> • {e['time']} • {e['location']}
-        </p>
-
-        <!-- Description -->
-        <p style="font-size:18px; line-height:1.6; color:#FFFFFF; text-align:justify;">
-        {e['description']}
-        </p>
-
+      </p>
+    
+      <!-- Description -->
+      <p class="modal-description">{e['description']}</p>
     </div>
     </div>
     """, unsafe_allow_html=True)
