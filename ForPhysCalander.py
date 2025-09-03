@@ -165,8 +165,7 @@ if "events" not in st.session_state:
         mkevent(dt(2025, 9, 5),'Welcome Party',
                 'PGSC','Recreational',
                 '2:30-5:30 PM','ISA 5010',
-                "A great way to start the semester with pizza (that's free!), friends, and \
-                        fun physics trivia!"),
+                "A great way to start the semester with pizza (that's free!), friends, and fun physics trivia!"),
         mkevent(dt(2025, 9, 3),'Colloquium',
                 'Department of Physics', 'Academic/Professional',
                 '2:00-3:15 PM', 'ISA 2023',
@@ -222,11 +221,9 @@ def card_click(event, card_html):
     container = st.container()
     with container:
         st.markdown(card_html, unsafe_allow_html=True)
+        # Instead of invisible overlay, use a small visible button
         if st.button("View Details", key=f"btn_{key}"):
             st.session_state["selected_event"] = event
-            return True   # 🔥 return True if clicked
-    return False  # otherwise return False
-
 
 
 # -------------------
