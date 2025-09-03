@@ -305,6 +305,7 @@ if st.session_state.get("selected_event"):
     font-weight: 700;    /* bold */
     color: #9CCB3B;      /* green accent */
     margin-bottom: 12px; /* spacing below title */
+    text-align: center; 
     }
     .modal-box p {
     font-size: 16px;     /* normal text */
@@ -313,7 +314,8 @@ if st.session_state.get("selected_event"):
     margin: 6px 0;       /* consistent spacing */
     }
     .modal-box b {
-    color: #FFD700;      /* highlight labels like Date, Time */
+    color: white;      /* highlight labels like Date, Time */
+    text-align: center; 
     }
                 
       /* Close button */
@@ -323,7 +325,7 @@ if st.session_state.get("selected_event"):
         right: 12px;
         background: #9CCB3B;
         color: black;
-        border: none;
+        border: black;
         border-radius: 8px;
         padding: 2px 10px;
         font-weight: 700;
