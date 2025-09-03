@@ -222,9 +222,11 @@ def card_click(event, card_html):
     container = st.container()
     with container:
         st.markdown(card_html, unsafe_allow_html=True)
-        # Instead of invisible overlay, use a small visible button
         if st.button("View Details", key=f"btn_{key}"):
             st.session_state["selected_event"] = event
+            return True   # 🔥 return True if clicked
+    return False  # otherwise return False
+
 
 
 # -------------------
